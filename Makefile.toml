@@ -1,0 +1,28 @@
+[tasks.cargo-format]
+install_crate = "rustfmt"
+command = "cargo"
+args = ["fmt", "--all"]
+
+[tasks.leptos-format]
+install_crate = "leptosfmt"
+command = "leptosfmt"
+args = ["."]
+
+[tasks.format]
+dependencies = [
+    "cargo-format",
+    "leptos-format"
+]
+
+[tasks.fmt]
+alias = "format"
+
+[tasks.build]
+install_crate = "cargo-leptos"
+command = "cargo"
+args = ["leptos", "serve", "-r"]
+
+[tasks.serve]
+install_crate = "cargo-leptos"
+command = "cargo"
+args = ["leptos", "watch", "--features", "development", "--hot-reload"]
