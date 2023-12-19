@@ -6,13 +6,14 @@ args = ["fmt", "--all"]
 [tasks.leptos-format]
 install_crate = "leptosfmt"
 command = "leptosfmt"
-args = ["."]
+args = ["app"]
 
 [tasks.format]
 dependencies = [
     "cargo-format",
     "leptos-format"
 ]
+workspace = false
 
 [tasks.fmt]
 alias = "format"
@@ -21,8 +22,10 @@ alias = "format"
 install_crate = "cargo-leptos"
 command = "cargo"
 args = ["leptos", "serve", "-r"]
+workspace = false
 
 [tasks.serve]
 install_crate = "cargo-leptos"
 command = "cargo"
 args = ["leptos", "watch", "--features", "development", "--hot-reload"]
+workspace = false

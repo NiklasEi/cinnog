@@ -27,22 +27,33 @@ pub fn App() -> impl IntoView {
                     <StaticRoute
                         path="/"
                         view=HomePage
-                        static_params=Arc::new(Mutex::new(Box::new(IntoSystem::into_system(empty_static_params))))
+                        static_params=Arc::new(
+                            Mutex::new(Box::new(IntoSystem::into_system(empty_static_params))),
+                        )
                     />
+
                     <StaticRoute
                         path="/test/hallo"
                         view=Test
-                        static_params=Arc::new(Mutex::new(Box::new(IntoSystem::into_system(empty_static_params))))
+                        static_params=Arc::new(
+                            Mutex::new(Box::new(IntoSystem::into_system(empty_static_params))),
+                        )
                     />
+
                     <StaticRoute
                         path="404"
                         view=NotFound
-                        static_params=Arc::new(Mutex::new(Box::new(IntoSystem::into_system(empty_static_params))))
+                        static_params=Arc::new(
+                            Mutex::new(Box::new(IntoSystem::into_system(empty_static_params))),
+                        )
                     />
+
                     <StaticRoute
                         path="/*any"
                         view=PersonalHomePage
-                        static_params=Arc::new(Mutex::new(Box::new(IntoSystem::into_system(personal_static_params))))
+                        static_params=Arc::new(
+                            Mutex::new(Box::new(IntoSystem::into_system(personal_static_params))),
+                        )
                     />
 
                 </Routes>
@@ -94,8 +105,7 @@ fn Test() -> impl IntoView {
 
     view! {
         <p>{test}</p>
-                <Counter/>
-
+        <Counter/>
     }
 }
 
@@ -107,7 +117,10 @@ fn HomePage() -> impl IntoView {
 
     view! {
         <Navigation/>
-        <h1>"Welcome to Leptos! At " {route.params().get().0.get("any").unwrap_or(&"no any param".to_owned())}</h1>
+        <h1>
+            "Welcome to Leptos! At "
+            {route.params().get().0.get("any").unwrap_or(&"no any param".to_owned())}
+        </h1>
         <Counter/>
     }
 }
