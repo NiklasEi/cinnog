@@ -3,7 +3,7 @@ use bevy_ecs::component::Component;
 use bevy_ecs::prelude::Resource;
 use bevy_ecs::query::With;
 use bevy_ecs::system::{IntoSystem, Query};
-use bevy_ecs::world::World;
+use data_layer::expect_resource;
 use leptos::*;
 use leptos_meta::*;
 use leptos_router::*;
@@ -15,7 +15,7 @@ pub fn App() -> impl IntoView {
     provide_meta_context();
 
     view! {
-        <Stylesheet id="leptos" href="/pkg/leptos_start.css"/>
+        <Stylesheet id="leptos" href="/pkg/ecs_leptos_ssg.css"/>
 
         // sets the document title
         <Title text="Welcome to Leptos"/>
@@ -69,7 +69,7 @@ struct PersonRouteParams {
     any: String,
 }
 
-#[derive(Resource)]
+#[derive(Resource, Clone)]
 pub struct TestResource(pub String);
 
 #[derive(Component)]
@@ -89,9 +89,7 @@ fn PersonalHomePage() -> impl IntoView {
 
 #[component]
 fn Test() -> impl IntoView {
-    let world_binding = expect_context::<Arc<Mutex<World>>>();
-    let world = world_binding.lock().unwrap();
-    let test = &world.get_resource::<TestResource>().unwrap().0;
+    let test = expect_resource::<TestResource>().0;
     println!("{test}");
 
     view! {
@@ -104,11 +102,7 @@ fn Test() -> impl IntoView {
 #[component]
 fn HomePage() -> impl IntoView {
     let route = use_route();
-    let test = {
-        let world_binding = expect_context::<Arc<Mutex<World>>>();
-        let world = world_binding.lock().unwrap();
-        world.get_resource::<TestResource>().unwrap().0.to_owned()
-    };
+    let test = expect_resource::<TestResource>().0;
     println!("{test}");
 
     view! {
@@ -138,6 +132,8 @@ fn NotFound() -> impl IntoView {
 
 #[component]
 fn Navigation() -> impl IntoView {
+    let test = expect_resource::<TestResource>().0;
+    println!("{test}");
     view! {
         <ul>
             <li>

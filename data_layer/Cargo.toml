@@ -1,0 +1,15 @@
+[package]
+name = "data_layer"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+leptos = { workspace = true, features = [ "ssr" ]}
+leptos_router = { workspace = true, features = [ "ssr" ]}
+leptos_actix = { workspace = true }
+actix-web.workspace = true
+actix-files.workspace = true
+bevy_ecs.workspace = true
+
+[features]
+development = []

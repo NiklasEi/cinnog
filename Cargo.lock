@@ -126,7 +126,7 @@ dependencies = [
  "futures-core",
  "futures-util",
  "mio",
- "socket2 0.5.5",
+ "socket2",
  "tokio",
  "tracing",
 ]
@@ -187,7 +187,7 @@ dependencies = [
  "serde_json",
  "serde_urlencoded",
  "smallvec",
- "socket2 0.5.5",
+ "socket2",
  "time",
  "url",
 ]
@@ -278,6 +278,18 @@ name = "anyhow"
 version = "1.0.75"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a4668cab20f66d8d020e1fbc0ebe47217433c1b6c8f2040faf858554e394ace6"
+
+[[package]]
+name = "app"
+version = "0.1.0"
+dependencies = [
+ "bevy_core",
+ "bevy_ecs",
+ "data_layer",
+ "leptos",
+ "leptos_meta",
+ "leptos_router",
+]
 
 [[package]]
 name = "askama_escape"
@@ -942,6 +954,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "data_layer"
+version = "0.1.0"
+dependencies = [
+ "actix-files",
+ "actix-web",
+ "bevy_ecs",
+ "leptos",
+ "leptos_actix",
+ "leptos_router",
+]
+
+[[package]]
 name = "deranged"
 version = "0.3.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -995,25 +1019,6 @@ name = "drain_filter_polyfill"
 version = "0.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "669a445ee724c5c69b1b06fe0b63e70a1c84bc9bb7d9696cd4f4e3ec45050408"
-
-[[package]]
-name = "ecs_leptos_ssg"
-version = "0.1.0"
-dependencies = [
- "actix-files",
- "actix-web",
- "bevy_app",
- "bevy_core",
- "bevy_ecs",
- "cfg-if",
- "console_error_panic_hook",
- "futures-lite 2.1.0",
- "leptos",
- "leptos_actix",
- "leptos_meta",
- "leptos_router",
- "wasm-bindgen",
-]
 
 [[package]]
 name = "either"
@@ -1116,6 +1121,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e13624c2627564efccf4934284bdd98cbaa14e79b0b5a141218e507b3a823456"
 dependencies = [
  "percent-encoding",
+]
+
+[[package]]
+name = "frontend"
+version = "0.1.0"
+dependencies = [
+ "console_error_panic_hook",
+ "leptos",
+ "wasm-bindgen",
 ]
 
 [[package]]
@@ -1415,9 +1429,9 @@ checksum = "df3b46402a9d5adb4c86a0cf463f42e19994e3ee891101b1841f30a545cb49a9"
 
 [[package]]
 name = "hyper"
-version = "0.14.27"
+version = "0.14.28"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ffb1cfd654a8219eaef89881fdb3bb3b1cdc5fa75ded05d6933b2b382e395468"
+checksum = "bf96e135eb83a2a8ddf766e426a841d8ddd7449d5f00d34ea02b41d2f19eef80"
 dependencies = [
  "bytes",
  "futures-channel",
@@ -1430,7 +1444,7 @@ dependencies = [
  "httpdate",
  "itoa",
  "pin-project-lite",
- "socket2 0.4.10",
+ "socket2",
  "tokio",
  "tower-service",
  "tracing",
@@ -1550,7 +1564,6 @@ checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
 [[package]]
 name = "leptos"
 version = "0.5.4"
-source = "git+https://github.com/NiklasEi/leptos?branch=compatibility_own_ssg_workflow#36acd1a8600191c55032f0d7bfef71b55d0d4389"
 dependencies = [
  "cfg-if",
  "leptos_config",
@@ -1571,7 +1584,6 @@ dependencies = [
 [[package]]
 name = "leptos_actix"
 version = "0.5.4"
-source = "git+https://github.com/NiklasEi/leptos?branch=compatibility_own_ssg_workflow#36acd1a8600191c55032f0d7bfef71b55d0d4389"
 dependencies = [
  "actix-http",
  "actix-web",
@@ -1590,7 +1602,6 @@ dependencies = [
 [[package]]
 name = "leptos_config"
 version = "0.5.4"
-source = "git+https://github.com/NiklasEi/leptos?branch=compatibility_own_ssg_workflow#36acd1a8600191c55032f0d7bfef71b55d0d4389"
 dependencies = [
  "config",
  "regex",
@@ -1602,7 +1613,6 @@ dependencies = [
 [[package]]
 name = "leptos_dom"
 version = "0.5.4"
-source = "git+https://github.com/NiklasEi/leptos?branch=compatibility_own_ssg_workflow#36acd1a8600191c55032f0d7bfef71b55d0d4389"
 dependencies = [
  "async-recursion",
  "cfg-if",
@@ -1631,7 +1641,6 @@ dependencies = [
 [[package]]
 name = "leptos_hot_reload"
 version = "0.5.4"
-source = "git+https://github.com/NiklasEi/leptos?branch=compatibility_own_ssg_workflow#36acd1a8600191c55032f0d7bfef71b55d0d4389"
 dependencies = [
  "anyhow",
  "camino",
@@ -1648,7 +1657,6 @@ dependencies = [
 [[package]]
 name = "leptos_integration_utils"
 version = "0.5.4"
-source = "git+https://github.com/NiklasEi/leptos?branch=compatibility_own_ssg_workflow#36acd1a8600191c55032f0d7bfef71b55d0d4389"
 dependencies = [
  "futures",
  "leptos",
@@ -1661,7 +1669,6 @@ dependencies = [
 [[package]]
 name = "leptos_macro"
 version = "0.5.4"
-source = "git+https://github.com/NiklasEi/leptos?branch=compatibility_own_ssg_workflow#36acd1a8600191c55032f0d7bfef71b55d0d4389"
 dependencies = [
  "attribute-derive",
  "cfg-if",
@@ -1683,7 +1690,6 @@ dependencies = [
 [[package]]
 name = "leptos_meta"
 version = "0.5.4"
-source = "git+https://github.com/NiklasEi/leptos?branch=compatibility_own_ssg_workflow#36acd1a8600191c55032f0d7bfef71b55d0d4389"
 dependencies = [
  "cfg-if",
  "indexmap",
@@ -1696,7 +1702,6 @@ dependencies = [
 [[package]]
 name = "leptos_reactive"
 version = "0.5.4"
-source = "git+https://github.com/NiklasEi/leptos?branch=compatibility_own_ssg_workflow#36acd1a8600191c55032f0d7bfef71b55d0d4389"
 dependencies = [
  "base64",
  "cfg-if",
@@ -1723,7 +1728,6 @@ dependencies = [
 [[package]]
 name = "leptos_router"
 version = "0.5.4"
-source = "git+https://github.com/NiklasEi/leptos?branch=compatibility_own_ssg_workflow#36acd1a8600191c55032f0d7bfef71b55d0d4389"
 dependencies = [
  "bevy_ecs",
  "cached",
@@ -1754,7 +1758,6 @@ dependencies = [
 [[package]]
 name = "leptos_server"
 version = "0.5.4"
-source = "git+https://github.com/NiklasEi/leptos?branch=compatibility_own_ssg_workflow#36acd1a8600191c55032f0d7bfef71b55d0d4389"
 dependencies = [
  "inventory",
  "lazy_static",
@@ -2454,9 +2457,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "server"
+version = "0.1.0"
+dependencies = [
+ "actix-web",
+ "app",
+ "bevy_core",
+ "data_layer",
+ "leptos",
+]
+
+[[package]]
 name = "server_fn"
 version = "0.5.4"
-source = "git+https://github.com/NiklasEi/leptos?branch=compatibility_own_ssg_workflow#36acd1a8600191c55032f0d7bfef71b55d0d4389"
 dependencies = [
  "ciborium",
  "const_format",
@@ -2480,7 +2493,6 @@ dependencies = [
 [[package]]
 name = "server_fn_macro"
 version = "0.5.4"
-source = "git+https://github.com/NiklasEi/leptos?branch=compatibility_own_ssg_workflow#36acd1a8600191c55032f0d7bfef71b55d0d4389"
 dependencies = [
  "const_format",
  "proc-macro-error",
@@ -2494,7 +2506,6 @@ dependencies = [
 [[package]]
 name = "server_fn_macro_default"
 version = "0.5.4"
-source = "git+https://github.com/NiklasEi/leptos?branch=compatibility_own_ssg_workflow#36acd1a8600191c55032f0d7bfef71b55d0d4389"
 dependencies = [
  "server_fn_macro",
  "syn 2.0.41",
@@ -2561,16 +2572,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "74212e6bbe9a4352329b2f68ba3130c15a3f26fe88ff22dbdc6cdd58fa85e99c"
 dependencies = [
  "serde",
-]
-
-[[package]]
-name = "socket2"
-version = "0.4.10"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9f7916fc008ca5542385b89a3d3ce689953c143e9304a9bf8beec1de48994c0d"
-dependencies = [
- "libc",
- "winapi",
 ]
 
 [[package]]
@@ -2737,7 +2738,7 @@ dependencies = [
  "parking_lot",
  "pin-project-lite",
  "signal-hook-registry",
- "socket2 0.5.5",
+ "socket2",
  "windows-sys",
 ]
 
