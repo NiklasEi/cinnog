@@ -150,10 +150,10 @@ fn Navigation() -> impl IntoView {
     view! {
         <ul>
             <li>
-                <a href="/steve">steve</a>
+                <a href="/stephan">stephan</a>
             </li>
             <li>
-                <a href="/vali">vali</a>
+                <a href="/valentin">valentin</a>
             </li>
         </ul>
     }
