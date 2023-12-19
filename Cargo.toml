@@ -7,14 +7,14 @@ actix-files = { version = "0.6" }
 actix-web = { version = "4", features = ["macros"] }
 console_error_panic_hook = "0.1"
 cfg-if = "1"
-leptos = { path = "../leptos/leptos", features = ["nightly", "experimental-islands"] }
-#leptos = { git = "https://github.com/NiklasEi/leptos", branch = "compatibility_own_ssg_workflow", version = "0.5", features = ["nightly", "experimental-islands"] }
-leptos_meta = { path = "../leptos/meta", features = ["nightly"] }
-#leptos_meta = { git = "https://github.com/NiklasEi/leptos", branch = "compatibility_own_ssg_workflow", version = "0.5", features = ["nightly"] }
-leptos_actix = { path = "../leptos/integrations/actix", features = ["experimental-islands"] }
-#leptos_actix = { git = "https://github.com/NiklasEi/leptos", branch = "compatibility_own_ssg_workflow", version = "0.5", features = ["experimental-islands"] }
-leptos_router = { path = "../leptos/router", features = ["nightly"] }
-#leptos_router = { git = "https://github.com/NiklasEi/leptos", branch = "compatibility_own_ssg_workflow", version = "0.5", features = ["nightly"] }
+#leptos = { path = "../leptos/leptos", features = ["nightly", "experimental-islands"] }
+leptos = { git = "https://github.com/NiklasEi/leptos", branch = "compatibility_own_ssg_workflow", version = "0.5", features = ["nightly", "experimental-islands"] }
+#leptos_meta = { path = "../leptos/meta", features = ["nightly"] }
+leptos_meta = { git = "https://github.com/NiklasEi/leptos", branch = "compatibility_own_ssg_workflow", version = "0.5", features = ["nightly"] }
+#leptos_actix = { path = "../leptos/integrations/actix", features = ["experimental-islands"] }
+leptos_actix = { git = "https://github.com/NiklasEi/leptos", branch = "compatibility_own_ssg_workflow", version = "0.5", features = ["experimental-islands"] }
+#leptos_router = { path = "../leptos/router", features = ["nightly"] }
+leptos_router = { git = "https://github.com/NiklasEi/leptos", branch = "compatibility_own_ssg_workflow", version = "0.5", features = ["nightly"] }
 wasm-bindgen = "=0.2.89"
 futures-lite = "2.1.0"
 

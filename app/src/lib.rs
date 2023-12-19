@@ -41,7 +41,7 @@ pub fn App() -> impl IntoView {
                     />
 
                     <StaticRoute
-                        path="404"
+                        path="/404"
                         view=NotFound
                         static_params=Arc::new(
                             Mutex::new(Box::new(IntoSystem::into_system(empty_static_params))),
@@ -49,7 +49,7 @@ pub fn App() -> impl IntoView {
                     />
 
                     <StaticRoute
-                        path="/*any"
+                        path="/person/*any"
                         view=PersonalHomePage
                         static_params=Arc::new(
                             Mutex::new(Box::new(IntoSystem::into_system(personal_static_params))),
@@ -150,10 +150,10 @@ fn Navigation() -> impl IntoView {
     view! {
         <ul>
             <li>
-                <a href="/stephan">stephan</a>
+                <a href="/person/stephan">stephan</a>
             </li>
             <li>
-                <a href="/valentin">valentin</a>
+                <a href="/person/valentin">valentin</a>
             </li>
         </ul>
     }
