@@ -23,6 +23,9 @@ bevy_ecs = {  version = "0.12" }
 bevy_app = {  version = "0.12" }
 bevy_core = {  version = "0.12" }
 
+serde = {  version = "1", features = ["derive"] }
+ron = "0.8.1"
+
 # Defines a size-optimized profile for the WASM bundle in release mode
 [profile.wasm-release]
 inherits = "release"

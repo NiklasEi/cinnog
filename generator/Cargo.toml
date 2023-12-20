@@ -8,7 +8,11 @@ app = { path = "../app", default-features = false, features = ["ssr"] }
 leptos = { workspace = true, features = [ "ssr" ]}
 data_layer = { path = "../data_layer" }
 bevy_core.workspace = true
+bevy_ecs.workspace = true
 actix-web.workspace = true
+
+serde.workspace = true
+ron.workspace = true
 
 [features]
 development = ["data_layer/development"]

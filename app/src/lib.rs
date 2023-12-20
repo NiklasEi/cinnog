@@ -2,10 +2,8 @@ mod components;
 
 use components::navigation::Navigation;
 
-use bevy_core::Name;
 use bevy_ecs::component::Component;
 use bevy_ecs::prelude::Resource;
-use bevy_ecs::query::With;
 use bevy_ecs::system::{IntoSystem, Query};
 use leptos::*;
 use leptos_meta::*;
@@ -60,11 +58,11 @@ fn empty_static_params() -> StaticParamsMap {
     StaticParamsMap::default()
 }
 
-fn people_static_params(people: Query<&Name, With<Person>>) -> StaticParamsMap {
+fn people_static_params(people: Query<&PersonId>) -> StaticParamsMap {
     let mut map = StaticParamsMap::default();
     map.insert(
         "person".to_string(),
-        people.iter().map(|name| name.as_str().to_owned()).collect(),
+        people.iter().map(|person| person.0.clone()).collect(),
     );
     map
 }
@@ -78,7 +76,13 @@ struct PersonRouteParams {
 pub struct SiteName(pub String);
 
 #[derive(Component)]
-pub struct Person;
+pub struct PersonName(pub String);
+
+#[derive(Component)]
+pub struct PersonId(pub String);
+
+#[derive(Component)]
+pub struct Age(pub u8);
 
 #[component]
 fn HomePage() -> impl IntoView {

@@ -88,9 +88,21 @@ impl DataLayer {
         self.world.spawn(bundle)
     }
 
-    pub fn run<T: 'static>(&mut self, system: &mut BoxedSystem<(), T>) -> T {
+    pub fn run_boxed<R: 'static>(&mut self, system: &mut BoxedSystem<(), R>) -> R {
         system.initialize(&mut self.world);
-        system.run((), &mut self.world)
+        let to_return = system.run((), &mut self.world);
+        system.apply_deferred(&mut self.world);
+
+        to_return
+    }
+
+    pub fn run<S, R, T>(&mut self, system: S) -> R
+    where
+        S: IntoSystem<(), R, T>,
+        R: 'static,
+    {
+        let mut boxed_system: BoxedSystem<(), R> = Box::new(IntoSystem::into_system(system));
+        self.run_boxed(&mut boxed_system)
     }
 }
 
@@ -116,9 +128,8 @@ where
 {
     let data_layer = expect_context::<Arc<Mutex<DataLayer>>>();
     let mut lock = data_layer.lock().unwrap();
-    let mut boxed_system: BoxedSystem<(), R> = Box::new(IntoSystem::into_system(system));
 
-    lock.run(&mut boxed_system)
+    lock.run(system)
 }
 
 pub fn use_resource<R: Resource + Clone>() -> Option<R> {
@@ -144,7 +155,7 @@ where
                 let boxed_system_mutex = value.clone();
                 let mut boxed_system = boxed_system_mutex.lock().unwrap();
                 let mut world = world.lock().unwrap();
-                let params = world.run(&mut boxed_system);
+                let params = world.run_boxed(&mut boxed_system);
                 static_data.insert(key, params);
             }
             None => {

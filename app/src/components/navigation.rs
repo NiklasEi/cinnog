@@ -1,4 +1,4 @@
-use crate::{Person, SiteName};
+use crate::{PersonId, PersonName, SiteName};
 use bevy_core::Name;
 use bevy_ecs::query::With;
 use bevy_ecs::system::Query;
@@ -15,10 +15,10 @@ pub fn Navigation() -> impl IntoView {
             <ul class="people-links">
                 {persons
                     .into_iter()
-                    .map(|person| {
+                    .map(|(id, person)| {
                         view! {
                             <li>
-                                <a href=format!("/person/{}", person)>{person}</a>
+                                <a href=format!("/person/{}", id)>{person}</a>
                             </li>
                         }
                     })
@@ -28,6 +28,9 @@ pub fn Navigation() -> impl IntoView {
     }
 }
 
-fn get_persons(people: Query<&Name, With<Person>>) -> Vec<String> {
-    people.iter().map(|name| name.as_str().to_owned()).collect()
+fn get_persons(people: Query<(&PersonId, &PersonName)>) -> Vec<(String, String)> {
+    people
+        .iter()
+        .map(|(id, person)| (id.0.clone(), person.0.clone()))
+        .collect()
 }
