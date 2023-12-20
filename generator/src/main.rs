@@ -5,7 +5,7 @@ use leptos::serde;
 use std::fs::File;
 use std::{fs, io};
 
-#[actix_web::main]
+#[tokio::main]
 async fn main() -> io::Result<()> {
     let mut data = DataLayer::new();
     data.insert_resource(SiteName("Bevy ECS + Leptos = 💕".to_owned()));

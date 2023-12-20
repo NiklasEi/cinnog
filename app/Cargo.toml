@@ -8,7 +8,8 @@ data_layer = { path = "../data_layer" }
 
 leptos.workspace = true
 leptos_meta.workspace = true
-leptos_router.workspace = true
+#leptos_router = { path = "../leptos/router", features = ["nightly"] }
+leptos_router = { git = "https://github.com/NiklasEi/leptos", branch = "compatibility_own_ssg_workflow", version = "0.5", features = ["nightly"] }
 
 tracing.workspace = true
 
@@ -17,5 +18,5 @@ bevy_core.workspace = true
 
 [features]
 default = []
-hydrate = ["leptos/hydrate", "leptos_meta/hydrate", "leptos_router/hydrate"]
-ssr = ["leptos/ssr", "leptos_meta/ssr", "leptos_router/ssr"]
+hydrate = ["leptos/hydrate", "leptos_meta/hydrate", "leptos_router/hydrate", "data_layer/hydrate"]
+ssr = ["leptos/ssr", "leptos_meta/ssr", "leptos_router/ssr", "data_layer/ssr"]

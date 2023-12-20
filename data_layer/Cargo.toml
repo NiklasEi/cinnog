@@ -4,12 +4,21 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-leptos = { workspace = true, features = [ "ssr" ]}
-leptos_router = { workspace = true, features = [ "ssr" ]}
-leptos_actix = { workspace = true }
-actix-web.workspace = true
-actix-files.workspace = true
+leptos.workspace = true
 bevy_ecs.workspace = true
+
+axum = { version = "0.6", optional = true }
+tokio = { version = "1.33.0", features = ["full"], optional = true }
+tower = { version = "0.4.13", features = ["full"], optional = true }
+tower-http = { version = "0.4", features = ["full"], optional = true }
+#leptos_axum = { path = "../leptos/integrations/axum", features = ["experimental-islands"], optional = true }
+leptos_axum = { git = "https://github.com/NiklasEi/leptos", branch = "compatibility_own_ssg_workflow", version = "0.5", features = ["experimental-islands"], optional = true }
+#leptos_router = { path = "../leptos/router", features = ["nightly"], optional = true }
+leptos_router = { git = "https://github.com/NiklasEi/leptos", branch = "compatibility_own_ssg_workflow", version = "0.5", features = ["nightly"], optional = true }
+tokio-util = {version = "0.7", features = ["rt"], optional = true }
 
 [features]
 development = []
+hydrate = ["leptos/hydrate", "leptos_router/hydrate"]
+ssr = ["leptos/ssr", "leptos_router/ssr"]
+generator = ["dep:axum", "dep:tokio", "dep:tower", "dep:tower-http", "dep:leptos_axum", "dep:leptos_router", "dep:tokio-util"]

@@ -1,6 +1,4 @@
 use crate::{PersonId, PersonName, SiteName};
-use bevy_core::Name;
-use bevy_ecs::query::With;
 use bevy_ecs::system::Query;
 use data_layer::{expect_resource, run_system};
 use leptos::{component, view, IntoView};
