@@ -19,6 +19,4 @@ tokio-util = {version = "0.7", features = ["rt"], optional = true }
 
 [features]
 development = []
-hydrate = ["leptos/hydrate", "leptos_router/hydrate"]
-ssr = ["leptos/ssr", "leptos_router/ssr"]
 generator = ["dep:axum", "dep:tokio", "dep:tower", "dep:tower-http", "dep:leptos_axum", "dep:leptos_router", "dep:tokio-util"]

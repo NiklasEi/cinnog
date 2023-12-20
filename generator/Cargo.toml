@@ -6,7 +6,7 @@ edition = "2021"
 [dependencies]
 app = { path = "../app", default-features = false, features = ["ssr"] }
 leptos = { workspace = true, features = [ "ssr" ]}
-data_layer = { path = "../data_layer", features = ["generator", "ssr"] }
+data_layer = { path = "../data_layer", features = ["generator"] }
 bevy_core.workspace = true
 bevy_ecs.workspace = true
 

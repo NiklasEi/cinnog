@@ -18,5 +18,5 @@ bevy_core.workspace = true
 
 [features]
 default = []
-hydrate = ["leptos/hydrate", "leptos_meta/hydrate", "leptos_router/hydrate", "data_layer/hydrate"]
-ssr = ["leptos/ssr", "leptos_meta/ssr", "leptos_router/ssr", "data_layer/ssr"]
+hydrate = ["leptos/hydrate", "leptos_meta/hydrate", "leptos_router/hydrate"]
+ssr = ["leptos/ssr", "leptos_meta/ssr", "leptos_router/ssr"]
