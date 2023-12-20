@@ -1,5 +1,7 @@
 # Testing Leptos as a static site generator (SSG)
 
+**The example App is deployed on Netlify: https://ecs-leptos-ssg.netlify.app/**
+
 This project uses a custom branch of Leptos to be able to directly serve the output directory as a static website.
 
 `cargo make serve` serves the div directory with watch mode and hot-reload enabled.
