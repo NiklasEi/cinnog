@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["app", "frontend", "server", "data_layer"]
+members = ["app", "frontend", "generator", "data_layer"]
 
 [workspace.dependencies]
 actix-files = { version = "0.6" }
@@ -34,13 +34,13 @@ panic = "abort"
 [[workspace.metadata.leptos]]
 name = "ecs_leptos_ssg"
 
-# the package in the workspace that contains the server binary (binary crate)
-bin-package = "server"
+# the package in the workspace that contains the generator binary (binary crate)
+bin-package = "generator"
 
 # the package in the workspace that contains the frontend wasm binary (library crate)
 lib-package = "frontend"
 
-# The site root folder is where cargo-leptos generate all output. WARNING: all content of this folder will be erased on a rebuild. Use it in your server setup.
+# The site root folder is where cargo-leptos generate all output. WARNING: all content of this folder will be erased on a rebuild. Use it in your generator setup.
 site-root = "dist"
 # The site-root relative folder where all compiled output (JS, WASM and CSS) is written
 # Defaults to pkg
@@ -52,7 +52,7 @@ style-file = "style/main.scss"
 #
 # Optional. Env: LEPTOS_ASSETS_DIR.
 assets-dir = "assets"
-# The IP and port (ex: 127.0.0.1:3000) where the server serves the content. Use it in your server setup.
+# The IP and port (ex: 127.0.0.1:3000) where the generator serves the content. Use it in your generator setup.
 site-addr = "127.0.0.1:3000"
 # The port to use for automatic reload monitoring
 reload-port = 3001

@@ -29,3 +29,9 @@ install_crate = "cargo-leptos"
 command = "cargo"
 args = ["leptos", "watch", "--features", "development", "--hot-reload"]
 workspace = false
+
+[tasks.e2e]
+install_crate = "cargo-leptos"
+command = "cargo"
+args = ["leptos", "end-to-end", "--features", "development"]
+workspace = false

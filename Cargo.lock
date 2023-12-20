@@ -1257,6 +1257,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "generator"
+version = "0.1.0"
+dependencies = [
+ "actix-web",
+ "app",
+ "bevy_core",
+ "data_layer",
+ "leptos",
+]
+
+[[package]]
 name = "generic-array"
 version = "0.14.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2466,17 +2477,6 @@ dependencies = [
  "itoa",
  "ryu",
  "serde",
-]
-
-[[package]]
-name = "server"
-version = "0.1.0"
-dependencies = [
- "actix-web",
- "app",
- "bevy_core",
- "data_layer",
- "leptos",
 ]
 
 [[package]]
