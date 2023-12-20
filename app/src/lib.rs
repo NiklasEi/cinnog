@@ -14,18 +14,15 @@ use std::sync::{Arc, Mutex};
 
 #[component]
 pub fn App() -> impl IntoView {
-    // Provides context that manages stylesheets, titles, meta tags, etc.
     provide_meta_context();
 
     view! {
         <Html lang="en"/>
         <Meta name="description" content="A static website generated using Leptos and Bevy ECS"/>
-        <Stylesheet id="leptos" href="/pkg/ecs_leptos_ssg.css"/>
+        <Stylesheet href="/pkg/ecs_leptos_ssg.css"/>
 
-        // sets the document title
         <Title text="Welcome to Leptos"/>
 
-        // content for this welcome page
         <Router>
             <main>
                 <Routes>
