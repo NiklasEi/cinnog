@@ -1,5 +1,5 @@
 use bevy_ecs::bundle::Bundle;
-use bevy_ecs::system::{BoxedSystem, Resource};
+use bevy_ecs::system::{BoxedSystem, IntoSystem, Resource};
 use bevy_ecs::world::{EntityWorldMut, World};
 use leptos::{expect_context, get_configuration, provide_context, IntoView, LeptosOptions};
 use leptos_actix::generate_route_list_with_exclusions_and_ssg_and_context;
@@ -107,6 +107,18 @@ pub fn expect_resource<R: Resource + Clone>() -> R {
             type_name::<R>()
         )
     })
+}
+
+pub fn run_system<S, R, T>(system: S) -> R
+where
+    S: IntoSystem<(), R, T>,
+    R: 'static,
+{
+    let data_layer = expect_context::<Arc<Mutex<DataLayer>>>();
+    let mut lock = data_layer.lock().unwrap();
+    let mut boxed_system: BoxedSystem<(), R> = Box::new(IntoSystem::into_system(system));
+
+    lock.run(&mut boxed_system)
 }
 
 pub fn use_resource<R: Resource + Clone>() -> Option<R> {

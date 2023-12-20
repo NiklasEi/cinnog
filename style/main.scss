@@ -2,3 +2,19 @@ body {
 	font-family: sans-serif;
 	text-align: center;
 }
+
+.nav {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	padding: 5px;
+}
+
+.people-links {
+	li {
+		list-style-type: none;
+		padding: 0 5px;
+	}
+	display: flex;
+	flex-direction: row;
+}
