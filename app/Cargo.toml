@@ -10,7 +10,7 @@ leptos.workspace = true
 leptos_meta.workspace = true
 leptos_router.workspace = true
 
-tracing.worspace = true
+tracing.workspace = true
 
 bevy_ecs.workspace = true
 bevy_core.workspace = true

@@ -18,6 +18,8 @@ pub fn App() -> impl IntoView {
     provide_meta_context();
 
     view! {
+        <Html lang="en"/>
+        <Meta name="description" content="A static website generated using Leptos and Bevy ECS"/>
         <Stylesheet id="leptos" href="/pkg/ecs_leptos_ssg.css"/>
 
         // sets the document title
