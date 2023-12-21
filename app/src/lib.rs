@@ -75,10 +75,10 @@ struct PersonRouteParams {
 #[derive(Resource, Clone)]
 pub struct SiteName(pub String);
 
-#[derive(Component)]
+#[derive(Component, Clone)]
 pub struct PersonName(pub String);
 
-#[derive(Component)]
+#[derive(Component, Clone)]
 pub struct PersonId(pub String);
 
 #[derive(Component)]
