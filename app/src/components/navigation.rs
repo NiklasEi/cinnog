@@ -5,18 +5,18 @@ use leptos::{component, view, IntoView};
 
 #[component]
 pub fn Navigation() -> impl IntoView {
-    let test = expect_resource::<SiteName>().0;
-    let persons = run_system(get_persons);
+    let site_name = expect_resource::<SiteName>().0;
+    let persons = run_system(get_people);
     view! {
         <div class="nav">
-            <span>{test}</span>
+            <span>{site_name}</span>
             <ul class="people-links">
                 {persons
                     .into_iter()
                     .map(|(id, person)| {
                         view! {
                             <li>
-                                <a href=format!("/person/{}", id)>{person}</a>
+                                <a href=format!("/person/{}", id.0)>{person.0}</a>
                             </li>
                         }
                     })
@@ -26,9 +26,9 @@ pub fn Navigation() -> impl IntoView {
     }
 }
 
-fn get_persons(people: Query<(&PersonId, &PersonName)>) -> Vec<(String, String)> {
+fn get_people(people: Query<(&PersonId, &PersonName)>) -> Vec<(PersonId, PersonName)> {
     people
         .iter()
-        .map(|(id, person)| (id.0.clone(), person.0.clone()))
+        .map(|(id, person)| (id.clone(), person.clone()))
         .collect()
 }
