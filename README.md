@@ -37,6 +37,20 @@ In a more complete project, there would be helper methods/systems to e.g. load m
 - Extend example to include markdown -> HTML + fontmatter in components
 - Extend example with routes generated from ECS (should already be possible since the App component has access to the data layer)
 
+## License
+
+Dual-licensed under either of
+
+- Apache License, Version 2.0, ([LICENSE-APACHE](/LICENSE-APACHE) or https://www.apache.org/licenses/LICENSE-2.0)
+- MIT license ([LICENSE-MIT](/LICENSE-MIT) or https://opensource.org/licenses/MIT)
+
+at your option.
+
+## Contribution
+
+Unless you explicitly state otherwise, any contribution intentionally submitted
+for inclusion in the work by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any
+additional terms or conditions.
 
 [bevy_systems]: https://bevy-cheatbook.github.io/programming/systems.html?highlight=system#systems
 [bevy_resources]: https://bevy-cheatbook.github.io/programming/res.html
