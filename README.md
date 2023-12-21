@@ -11,8 +11,7 @@ This project uses a custom branch of Leptos to be able to directly serve the out
 
 ## Experimenting with Bevy ECS
 
-Bevy ECS is used in an attempt to add a data layer to Leptos as a static site generator.
-The idea would be similar to what Gatsby does with GraphQL, but using a Bevy ECS World as the database.
+Bevy ECS is used in an attempt to add a data layer to Leptos as a static site generator. The idea is similar to what Gatsby does with GraphQL using a Bevy ECS World as the database.
 
 The current data layer code is very minimal and can be found in the `data_layer` member of this workspace. In `generator`, a new data layer is constructed and filled with example data.
 
@@ -22,6 +21,7 @@ In a more complete project, there would be helper methods/systems to e.g. load m
 
 ### Improvements
 
+(not in any specific order)
 - Can we upstream changes to how Leptos handles static routes that would allow us get rid of the custom fork?
 - Bevy ECS and Leptos have some namespace clashes that would be helpful to resolve (e.g. ECS Component vs Leptos Component)
 - Re-evaluate if more bevy crates would make sense (`bevy_app`, `bevy_assets`)
