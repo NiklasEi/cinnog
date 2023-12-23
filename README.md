@@ -1,33 +1,25 @@
-# Testing Leptos as a static site generator (SSG)
+# Cinnog
 
-**The example App is deployed on Netlify: https://ecs-leptos-ssg.netlify.app/**
+A static site generator using Leptos
 
-This project uses a custom branch of Leptos to be able to directly serve the output directory as a static website.
+**You can find an example app at https://cinnog.netlify.app/**
 
-- `cargo make serve` serves the App with watch mode and hot-reload enabled.
-- `cargo make build` builds the project in release. The output will be in the `dist` directory and the command will not serve it, but quit instead.
-- `cargo make fmt` formats with `rustfmt` and `leptosfmt`.
-- `cargo make e2e` runs the end-to-end tests from the `end2end` directory.
+This project uses a custom branch of Leptos to be able to directly serve the output directory as a static website. Some additional changes were required to integrate the ECS data layer into the router.
 
 ## Experimenting with Bevy ECS
 
-Bevy ECS is used in an attempt to add a data layer to Leptos as a static site generator. The idea is similar to what Gatsby does with GraphQL using a Bevy ECS World as the database.
+[Bevy ECS][bevy_ecs] is used as a data layer. The idea is similar to what Gatsby does with GraphQL using a Bevy ECS World as the database.
 
-The current data layer code is very minimal and can be found in the `cinnog` member of this workspace. In `generator`, a new data layer is constructed and filled with example data.
+When all data is loaded and processed, Cinnog can build a given Leptos app and will supply the data layer in a context. Currently, you can run [Systems][bevy_systems] against the data layer and use their return value (think GraphQL query in Gatsby) and use the value of [Resources][bevy_resources].
 
-When all data is loaded and processed, the data layer can build a given Leptos app and will supply itself in a context. Currently, you can run [Systems][bevy_systems] against the data layer and use their return value (think GraphQL query in Gatsby) and use the value of [Resources][bevy_resources].
-
-In a more complete project, there would be helper methods/systems to e.g. load markdown files from certain directories and convert them to HTML in `generator`. In this potential future, `cinnog` might be a library with a proper name and re-export `leptos` and `bevy_ecs` for simpler setup.
+Currently, helper methods/systems are in work that cen, for example, load markdown files from certain directories and convert them to HTML.
 
 ### Improvements
 
 (not in any specific order)
 - Can we upstream changes to how Leptos handles static routes that would allow us get rid of the custom fork?
 - Bevy ECS and Leptos have some namespace clashes that would be helpful to resolve (e.g. ECS Component vs Leptos Component)
-- Re-evaluate if more bevy crates would make sense (`bevy_app`, `bevy_assets`)
-- Publish data layer and see if we could simplify the structure of user code
-  - Could we get rid of the `frontend` crate in user code?
-  - The example app should either be a separate repository or an example in the `cinnog` library
+- Could we get rid of the `frontend` crate in user code?
 - Users should not have to wrap static param systems in Mutex/Box
 - Loading and transforming files should be simple
   - This will need a bunch of helper systems and an easy way to integrate systems from third party crates
@@ -52,5 +44,6 @@ Unless you explicitly state otherwise, any contribution intentionally submitted
 for inclusion in the work by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any
 additional terms or conditions.
 
+[bevy_ecs]: https://crates.io/crates/bevy_ecs
 [bevy_systems]: https://bevy-cheatbook.github.io/programming/systems.html?highlight=system#systems
 [bevy_resources]: https://bevy-cheatbook.github.io/programming/res.html
