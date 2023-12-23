@@ -94,7 +94,7 @@ where
                 let boxed_system_mutex = value.clone();
                 let mut boxed_system = boxed_system_mutex.lock().unwrap();
                 let mut world = world.lock().unwrap();
-                let params = world.run_boxed(&mut boxed_system);
+                let params = world.run_boxed(&mut boxed_system, ());
                 static_data.insert(key, params);
             }
             None => {

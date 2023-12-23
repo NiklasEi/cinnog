@@ -1,89 +1,26 @@
-[workspace]
-resolver = "2"
-members = ["app", "frontend", "generator", "data_layer"]
+[package]
+name = "cinnog"
+version = "0.1.0"
+edition = "2021"
 
-[workspace.dependencies]
-console_error_panic_hook = "0.1"
-cfg-if = "1"
+[dependencies]
 #leptos = { path = "../leptos/leptos", features = ["nightly", "experimental-islands"] }
-leptos = { git = "https://github.com/NiklasEi/leptos", branch = "compatibility_own_ssg_workflow", version = "0.5", features = ["nightly", "experimental-islands"] }
-#leptos_meta = { path = "../leptos/meta", features = ["nightly"] }
-leptos_meta = { git = "https://github.com/NiklasEi/leptos", branch = "compatibility_own_ssg_workflow", version = "0.5", features = ["nightly"] }
-wasm-bindgen = "=0.2.89"
-tracing = "0.1.40"
-
+leptos = { git = "https://github.com/NiklasEi/leptos", branch = "compatibility_own_ssg_workflow", version = "0.5", features = ["experimental-islands"] }
 bevy_ecs = {  version = "0.12" }
-bevy_app = {  version = "0.12" }
-bevy_core = {  version = "0.12" }
 
 serde = {  version = "1", features = ["derive"] }
 ron = "0.8.1"
 
-# Defines a size-optimized profile for the WASM bundle in release mode
-[profile.wasm-release]
-inherits = "release"
-opt-level = 'z'
-lto = true
-codegen-units = 1
-panic = "abort"
+axum = { version = "0.6", optional = true }
+tokio = { version = "1.33.0", features = ["full"], optional = true }
+tower = { version = "0.4.13", features = ["full"], optional = true }
+tower-http = { version = "0.4", features = ["full"], optional = true }
+#leptos_axum = { path = "../leptos/integrations/axum", features = ["experimental-islands"], optional = true }
+leptos_axum = { git = "https://github.com/NiklasEi/leptos", branch = "compatibility_own_ssg_workflow", version = "0.5", features = ["experimental-islands"], optional = true }
+#leptos_router = { path = "../leptos/router", optional = true }
+leptos_router = { git = "https://github.com/NiklasEi/leptos", branch = "compatibility_own_ssg_workflow", version = "0.5", optional = true }
+tokio-util = {version = "0.7", features = ["rt"], optional = true }
 
-[[workspace.metadata.leptos]]
-name = "ecs_leptos_ssg"
-
-# the package in the workspace that contains the generator binary (binary crate)
-bin-package = "generator"
-
-# the package in the workspace that contains the frontend wasm binary (library crate)
-lib-package = "frontend"
-
-# The site root folder is where cargo-leptos generate all output. WARNING: all content of this folder will be erased on a rebuild. Use it in your generator setup.
-site-root = "dist"
-# The site-root relative folder where all compiled output (JS, WASM and CSS) is written
-# Defaults to pkg
-site-pkg-dir = "pkg"
-# [Optional] The source CSS file. If it ends with .sass or .scss then it will be compiled by dart-sass into CSS. The CSS is optimized by Lightning CSS before being written to <site-root>/<site-pkg>/app.css
-style-file = "style/main.scss"
-# Assets source dir. All files found here will be copied and synchronized to site-root.
-# The assets-dir cannot have a sub directory with the same name/path as site-pkg-dir.
-#
-# Optional. Env: LEPTOS_ASSETS_DIR.
-assets-dir = "assets"
-# The IP and port (ex: 127.0.0.1:3000) where the generator serves the content. Use it in your generator setup.
-site-addr = "127.0.0.1:3000"
-# The port to use for automatic reload monitoring
-reload-port = 3001
-# [Optional] Command to use when running end2end tests. It will run in the end2end dir.
-#   [Windows] for non-WSL use "npx.cmd playwright test"
-#   This binary name can be checked in Powershell with Get-Command npx
-end2end-cmd = "npx playwright test"
-end2end-dir = "end2end"
-#  The browserlist query used for optimizing the CSS.
-browserquery = "defaults"
-# Set by cargo-leptos watch when building with that tool. Controls whether autoreload JS will be included in the head
-watch = false
-# The environment Leptos will run in, usually either "DEV" or "PROD"
-env = "DEV"
-# The features to use when compiling the bin target
-#
-# Optional. Can be over-ridden with the command line parameter --bin-features
-bin-features = []
-
-# If the --no-default-features flag should be used when compiling the bin target
-#
-# Optional. Defaults to false.
-bin-default-features = false
-
-# The features to use when compiling the lib target
-#
-# Optional. Can be over-ridden with the command line parameter --lib-features
-lib-features = []
-
-# If the --no-default-features flag should be used when compiling the lib target
-#
-# Optional. Defaults to false.
-lib-default-features = false
-
-# The profile to use for the lib target when compiling for release
-#
-# Optional. Defaults to "release".
-lib-profile-release = "wasm-release"
+[features]
+development = []
+generator = ["dep:axum", "dep:tokio", "dep:tower", "dep:tower-http", "dep:leptos_axum", "dep:leptos_router", "dep:tokio-util"]

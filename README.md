@@ -13,11 +13,11 @@ This project uses a custom branch of Leptos to be able to directly serve the out
 
 Bevy ECS is used in an attempt to add a data layer to Leptos as a static site generator. The idea is similar to what Gatsby does with GraphQL using a Bevy ECS World as the database.
 
-The current data layer code is very minimal and can be found in the `data_layer` member of this workspace. In `generator`, a new data layer is constructed and filled with example data.
+The current data layer code is very minimal and can be found in the `cinnog` member of this workspace. In `generator`, a new data layer is constructed and filled with example data.
 
 When all data is loaded and processed, the data layer can build a given Leptos app and will supply itself in a context. Currently, you can run [Systems][bevy_systems] against the data layer and use their return value (think GraphQL query in Gatsby) and use the value of [Resources][bevy_resources].
 
-In a more complete project, there would be helper methods/systems to e.g. load markdown files from certain directories and convert them to HTML in `generator`. In this potential future, `data_layer` might be a library with a proper name and re-export `leptos` and `bevy_ecs` for simpler setup.
+In a more complete project, there would be helper methods/systems to e.g. load markdown files from certain directories and convert them to HTML in `generator`. In this potential future, `cinnog` might be a library with a proper name and re-export `leptos` and `bevy_ecs` for simpler setup.
 
 ### Improvements
 
@@ -27,7 +27,7 @@ In a more complete project, there would be helper methods/systems to e.g. load m
 - Re-evaluate if more bevy crates would make sense (`bevy_app`, `bevy_assets`)
 - Publish data layer and see if we could simplify the structure of user code
   - Could we get rid of the `frontend` crate in user code?
-  - The example app should either be a separate repository or an example in the `data_layer` library
+  - The example app should either be a separate repository or an example in the `cinnog` library
 - Users should not have to wrap static param systems in Mutex/Box
 - Loading and transforming files should be simple
   - This will need a bunch of helper systems and an easy way to integrate systems from third party crates
