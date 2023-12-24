@@ -13,7 +13,8 @@ use std::{fs, io};
 pub fn read_markdown_from_directory<'a, FrontMatter: ToBundle + DeserializeOwned>(
     In(path): In<&'a str>,
     mut commands: Commands,
-) -> io::Result<()> {
+) -> io::Result<Vec<Entity>> {
+    let mut files = vec![];
     for entry in fs::read_dir(path)? {
         let entry = entry?;
         let path = entry.path();
@@ -30,25 +31,33 @@ pub fn read_markdown_from_directory<'a, FrontMatter: ToBundle + DeserializeOwned
                 );
             }
             file.insert(MarkdownBody(markdown.content));
+            files.push(file.id());
         }
     }
-    Ok(())
+    Ok(files)
+}
+
+pub fn mark_with<C: Component + Default>(In(entities): In<Vec<Entity>>, mut commands: Commands) {
+    for entity in entities {
+        commands.entity(entity).insert(C::default());
+    }
 }
 
 pub fn read_ron_files_from_directory<'a, D: ToBundle + DeserializeOwned>(
     In(path): In<&'a str>,
     mut commands: Commands,
-) -> io::Result<()> {
+) -> io::Result<Vec<Entity>> {
+    let mut files = vec![];
     for entry in fs::read_dir(path)? {
         let entry = entry?;
         let path = entry.path();
         if path.is_file() {
             let file = File::open(path.clone())?;
             let data: D = ron::de::from_reader(file).map_err(|error| io::Error::other(error))?;
-            commands.spawn(data.to_bundle_with_path(&path));
+            files.push(commands.spawn(data.to_bundle_with_path(&path)).id());
         }
     }
-    Ok(())
+    Ok(files)
 }
 
 #[derive(Component, Clone)]
