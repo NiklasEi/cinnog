@@ -4,7 +4,7 @@ pub mod loaders;
 
 use bevy_ecs::bundle::Bundle;
 use bevy_ecs::component::Component;
-use bevy_ecs::system::{BoxedSystem, IntoSystem, Resource};
+use bevy_ecs::system::{BoxedSystem, EntityCommands, IntoSystem, Resource};
 use bevy_ecs::world::{EntityWorldMut, World};
 use leptos::expect_context;
 use std::any::type_name;
@@ -104,31 +104,36 @@ pub struct FileName(pub String);
 #[derive(Component, Clone)]
 pub struct FilePath(pub String);
 
-pub trait ToBundle {
-    fn to_bundle(self) -> impl Bundle
+pub trait Ingest {
+    fn ingest(self, commands: &mut EntityCommands)
     where
         Self: Sized;
 
-    fn to_bundle_with_path(self, path: &PathBuf) -> impl Bundle
+    fn ingest_with_path(self, commands: &mut EntityCommands, path: &PathBuf)
     where
         Self: Sized,
     {
-        let path_string = path.to_string_lossy().into_owned();
-        let file_ending = path.as_path().extension();
-        let file_name = if let Some(ending) = file_ending {
-            path.file_name().map(|name| {
-                name.to_string_lossy()
-                    .trim_end_matches(&format!(".{}", ending.to_string_lossy().as_ref()))
-                    .to_owned()
-            })
-        } else {
-            path.file_name()
-                .map(|name| name.to_string_lossy().into_owned())
-        };
-        (
-            self.to_bundle(),
-            FileName(file_name.expect("No file name in path")),
-            FilePath(path_string),
-        )
+        self.ingest(commands);
+        commands.insert(default_bundle_from_path(path));
     }
+}
+
+pub fn default_bundle_from_path(path: &PathBuf) -> impl Bundle {
+    let path_string = path.to_string_lossy().into_owned();
+    let file_ending = path.as_path().extension();
+    let file_name = if let Some(ending) = file_ending {
+        path.file_name().map(|name| {
+            name.to_string_lossy()
+                .trim_end_matches(&format!(".{}", ending.to_string_lossy().as_ref()))
+                .to_owned()
+        })
+    } else {
+        path.file_name()
+            .map(|name| name.to_string_lossy().into_owned())
+    };
+
+    (
+        FileName(file_name.expect("No file name in path")),
+        FilePath(path_string),
+    )
 }
