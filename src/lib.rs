@@ -8,7 +8,7 @@ use bevy_ecs::system::{BoxedSystem, EntityCommands, IntoSystem, Resource};
 use bevy_ecs::world::{EntityWorldMut, World};
 use leptos::expect_context;
 use std::any::type_name;
-use std::path::PathBuf;
+use std::path::Path;
 use std::sync::{Arc, Mutex};
 
 pub struct DataLayer {
@@ -109,18 +109,14 @@ pub trait Ingest {
     where
         Self: Sized;
 
-    fn ingest_with_path(self, commands: &mut EntityCommands, path: &PathBuf)
-    where
-        Self: Sized,
-    {
-        self.ingest(commands);
+    fn ingest_path(&self, commands: &mut EntityCommands, path: &Path) {
         commands.insert(default_bundle_from_path(path));
     }
 }
 
-pub fn default_bundle_from_path(path: &PathBuf) -> impl Bundle {
+pub fn default_bundle_from_path(path: &Path) -> impl Bundle {
     let path_string = path.to_string_lossy().into_owned();
-    let file_ending = path.as_path().extension();
+    let file_ending = path.extension();
     let file_name = if let Some(ending) = file_ending {
         path.file_name().map(|name| {
             name.to_string_lossy()
