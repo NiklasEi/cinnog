@@ -1,18 +1,18 @@
 # Cinnog
 
-A static site generator using Leptos
+A static site generator using [Leptos]
 
-**You can find an example app at https://cinnog.netlify.app/**
+**There is an [example app] which is hosted at https://cinnog.netlify.app/**
 
 This project uses a custom branch of Leptos to be able to directly serve the output directory as a static website. Some additional changes were required to integrate the ECS data layer into the router.
 
-## Experimenting with Bevy ECS
+## The Data layer
 
-[Bevy ECS][bevy_ecs] is used as a data layer. The idea is similar to what Gatsby does with GraphQL using a Bevy ECS World as the database.
+[Bevy ECS] is used in an attempt to add a data layer to Leptos as a static site generator. The idea is similar to what Gatsby does with GraphQL using a Bevy ECS World as an in-memory database. The API of Bevy ECS is very nice to work with as a user. It removes any need of an extra syntax for data queries.
 
-When all data is loaded and processed, Cinnog can build a given Leptos app and will supply the data layer in a context. Currently, you can run [Systems][bevy_systems] against the data layer and use their return value (think GraphQL query in Gatsby) and use the value of [Resources][bevy_resources].
+Cinnog is quite minimal at the moment and very experimental. In `generator`, a new data layer is constructed and filled with example data from markdown and `ron` files.
 
-Currently, helper methods/systems are in work that cen, for example, load markdown files from certain directories and convert them to HTML.
+When all data is loaded and processed, Cinnog can build a given Leptos app and will supply the data layer in a context. Inside components, you can run [Systems][bevy_systems] against the data layer (think GraphQL query in Gatsby) and use [Resources][bevy_resources].
 
 ### Improvements
 
@@ -21,12 +21,9 @@ Currently, helper methods/systems are in work that cen, for example, load markdo
 - Bevy ECS and Leptos have some namespace clashes that would be helpful to resolve (e.g. ECS Component vs Leptos Component)
 - Could we get rid of the `frontend` crate in user code?
 - Users should not have to wrap static param systems in Mutex/Box
-- Loading and transforming files should be simple
-  - This will need a bunch of helper systems and an easy way to integrate systems from third party crates
-- In components, it would be good to somehow get the "current entity". Going via the path parameters directly seems odd and involves more steps than I would like.
+- In components, it would be easy to somehow get the "current entity". Going via the path parameters directly seems odd and involves multiple steps.
   - Maybe this just needs a well working pattern using contexts in user space?
-  - Or some mapping of path params and Entities + a context
-- Extend example to include markdown -> HTML + fontmatter in components
+  - Or some automatic mapping of path params and Entities + a context?
 - Extend example with routes generated from ECS (should already be possible since the App component has access to the data layer)
 
 ## License
@@ -44,6 +41,8 @@ Unless you explicitly state otherwise, any contribution intentionally submitted
 for inclusion in the work by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any
 additional terms or conditions.
 
-[bevy_ecs]: https://crates.io/crates/bevy_ecs
+[Bevy ECS]: https://github.com/bevyengine/bevy/tree/main/crates/bevy_ecs
+[Leptos]: https://github.com/leptos-rs/leptos
 [bevy_systems]: https://bevy-cheatbook.github.io/programming/systems.html?highlight=system#systems
 [bevy_resources]: https://bevy-cheatbook.github.io/programming/res.html
+[example app]: 
