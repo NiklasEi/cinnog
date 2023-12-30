@@ -45,4 +45,4 @@ additional terms or conditions.
 [Leptos]: https://github.com/leptos-rs/leptos
 [bevy_systems]: https://bevy-cheatbook.github.io/programming/systems.html?highlight=system#systems
 [bevy_resources]: https://bevy-cheatbook.github.io/programming/res.html
-[example app]: 
+[example app]: https://github.com/NiklasEi/cinnog_example
