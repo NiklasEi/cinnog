@@ -55,16 +55,12 @@ impl DataLayer {
 
         #[cfg(feature = "development")]
         {
-            use axum::routing::post;
             use axum::Router;
-            use leptos_axum::LeptosRoutes;
 
             let addr = leptos_options.site_addr;
             println!("listening on http://{}", &addr);
 
             let app = Router::new()
-                .route("/api/*fn_name", post(leptos_axum::handle_server_fns))
-                .leptos_routes(&leptos_options, routes, app_fn)
                 .fallback(file_and_error_handler)
                 .with_state(leptos_options);
 
@@ -135,8 +131,16 @@ pub async fn file_and_error_handler(
 ) -> AxumResponse {
     let root = options.site_root.clone();
     let res = get_static_file(uri.clone(), &root).await.unwrap();
-
-    res.into_response()
+    if res.status() == StatusCode::NOT_FOUND {
+        // try with `.html`
+        let uri_html = format!("{}.html", uri).parse().unwrap();
+        get_static_file(uri_html, &root)
+            .await
+            .unwrap()
+            .into_response()
+    } else {
+        res.into_response()
+    }
 }
 
 async fn get_static_file(uri: Uri, root: &str) -> Result<Response<BoxBody>, (StatusCode, String)> {
