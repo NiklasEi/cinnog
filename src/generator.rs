@@ -8,8 +8,7 @@ use axum::{
 };
 use leptos::*;
 use leptos_axum::generate_route_list_with_exclusions_and_ssg_and_context;
-use leptos_router::{RouteListing, StaticDataMap, StaticParamsMap, StaticPath};
-use std::collections::HashMap;
+use leptos_router::build_static_routes_with_additional_context;
 use std::sync::{Arc, Mutex};
 use tokio::task;
 use tower::ServiceExt;
@@ -41,10 +40,10 @@ impl DataLayer {
         let routes_clone = routes.clone();
         local
             .run_until(async move {
-                build_static_routes_with_world(
+                build_static_routes_with_additional_context(
                     &leptos_options_clone,
                     app_fn_clone,
-                    data.clone(),
+                    move || provide_context(data.clone()),
                     &routes_clone,
                     &static_data_map,
                 )
@@ -71,57 +70,6 @@ impl DataLayer {
         }
         Ok(())
     }
-}
-
-async fn build_static_routes_with_world<IV>(
-    options: &LeptosOptions,
-    app_fn: impl Fn() -> IV + 'static + Clone,
-    world: Arc<Mutex<DataLayer>>,
-    routes: &[RouteListing],
-    static_data_map: &StaticDataMap,
-) -> Result<(), std::io::Error>
-where
-    IV: IntoView + 'static,
-{
-    let mut static_data: HashMap<&str, StaticParamsMap> = HashMap::new();
-    for (key, value) in static_data_map {
-        match value {
-            Some(value) => {
-                let boxed_system_mutex = value.clone();
-                let mut boxed_system = boxed_system_mutex.lock().unwrap();
-                let mut world = world.lock().unwrap();
-                let params = world.run_boxed(&mut boxed_system, ());
-                static_data.insert(key, params);
-            }
-            None => {
-                static_data.insert(key, StaticParamsMap::default());
-            }
-        };
-    }
-    let static_routes = routes
-        .iter()
-        .filter(|route| route.static_mode().is_some())
-        .collect::<Vec<_>>();
-    for route in static_routes {
-        let mut path = StaticPath::new(route.leptos_path());
-        for p in path.parents().into_iter().rev() {
-            if let Some(data) = static_data.get(p.path()) {
-                path.add_params(data);
-            }
-        }
-        if let Some(data) = static_data.get(path.path()) {
-            path.add_params(data);
-        }
-        for path in path.into_paths() {
-            println!("building static route: {}", path);
-            let world = world.clone();
-            path.write(options, app_fn.clone(), move || {
-                provide_context(world.clone())
-            })
-            .await?;
-        }
-    }
-    Ok(())
 }
 
 pub async fn file_and_error_handler(
