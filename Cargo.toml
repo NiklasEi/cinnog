@@ -5,7 +5,7 @@ edition = "2021"
 
 [dependencies]
 #leptos = { path = "../leptos/leptos", features = ["nightly", "experimental-islands"] }
-leptos = { git = "https://github.com/NiklasEi/leptos", version = "0.5", features = ["experimental-islands"] }
+leptos = { git = "https://github.com/leptos-rs/leptos", features = ["experimental-islands"] }
 bevy_ecs = {  version = "0.12" }
 
 serde = { version = "1", features = ["derive"], optional = true }
@@ -16,9 +16,9 @@ tokio = { version = "1.33.0", features = ["full"], optional = true }
 tower = { version = "0.4.13", features = ["full"], optional = true }
 tower-http = { version = "0.4", features = ["full"], optional = true }
 #leptos_axum = { path = "../leptos/integrations/axum", features = ["experimental-islands"], optional = true }
-leptos_axum = { git = "https://github.com/NiklasEi/leptos", version = "0.5", features = ["experimental-islands"], optional = true }
+leptos_axum = { git = "https://github.com/leptos-rs/leptos", features = ["experimental-islands"], optional = true }
 #leptos_router = { path = "../leptos/router", optional = true }
-leptos_router = { git = "https://github.com/NiklasEi/leptos", version = "0.5", optional = true }
+leptos_router = { git = "https://github.com/leptos-rs/leptos", optional = true }
 tokio-util = {version = "0.7", features = ["rt"], optional = true }
 
 gray_matter = { version = "0.2.6", optional = true }
