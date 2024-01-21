@@ -4,7 +4,7 @@ A static site generator using [Leptos] with [Bevy ECS] as a data layer
 
 **There is an [example app] which is hosted at https://cinnog.netlify.app/**
 
-This project uses a custom branch of Leptos to be able to directly serve the output directory as a static website. Some additional changes were required to integrate the ECS data layer into the router.
+This project uses the `main` branch of Leptos to be able to directly serve the output directory as a static website.
 
 ## The Data layer
 
