@@ -15,10 +15,8 @@ Users can fill the data layer with content from the file system, external APIs, 
 ### Improvements
 
 (not in any specific order)
-- Can we upstream changes to how Leptos handles static routes that would allow us get rid of the custom fork?
 - Bevy ECS and Leptos have some namespace clashes that would be helpful to resolve (ECS Component vs Leptos Component)
 - Could we get rid of the `frontend` crate in user code?
-- Users should not have to wrap static param systems in Mutex/Box
 - In Leptos components, it would be easy to somehow get the "current entity". Going via the path parameters directly seems odd and involves multiple steps.
   - Maybe this just needs a well working pattern using contexts in user space?
   - Or some automatic mapping of path params and Entities + a context?
