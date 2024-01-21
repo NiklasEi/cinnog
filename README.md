@@ -17,7 +17,7 @@ Users can fill the data layer with content from the file system, external APIs, 
 (not in any specific order)
 - Bevy ECS and Leptos have some namespace clashes that would be helpful to resolve (ECS Component vs Leptos Component)
 - Could we get rid of the `frontend` crate in user code?
-- In Leptos components, it would be easy to somehow get the "current entity". Going via the path parameters directly seems odd and involves multiple steps.
+- In Leptos components, it should be easy to get the "current entity". Going via the path parameters directly seems odd and involves multiple steps.
   - Maybe this just needs a well working pattern using contexts in user space?
   - Or some automatic mapping of path params and Entities + a context?
 - Extend example with routes generated from ECS (should already be possible since the App component has access to the data layer)
