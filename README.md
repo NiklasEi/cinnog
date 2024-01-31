@@ -4,8 +4,6 @@ A static site generator using [Leptos] with [Bevy ECS] as a data layer
 
 **There is an [example app] which is hosted at https://cinnog.netlify.app/**
 
-This project uses the `main` branch of Leptos to be able to directly serve the output directory as a static website.
-
 ## The Data layer
 
 [Bevy ECS] is used as data layer while the static site generation is handled by Leptos. The idea is similar to what Gatsby does with GraphQL using a Bevy ECS World as an in-memory database. The API of Bevy ECS is very nice to work with as a user. It removes any need of an extra syntax for data queries.
