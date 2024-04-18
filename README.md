@@ -10,6 +10,10 @@ A static site generator using [Leptos] with [Bevy ECS] as a data layer
 
 Users can fill the data layer with content from the file system, external APIs, or anywhere else. When all data is loaded and processed, Cinnog can build a given Leptos app and will supply the data layer in a context. Inside components, you can run [Systems][bevy_systems] against the data layer (think GraphQL query in Gatsby) and use [Resources][bevy_resources].
 
+# MSRV
+
+Since this project relies on Bevy, it has the same MSRV policy: latest stable Rust.
+
 ### Improvements
 
 (not in any specific order)

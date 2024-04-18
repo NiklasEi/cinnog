@@ -1,6 +1,6 @@
 [package]
 name = "cinnog"
-version = "0.1.1"
+version = "0.2.0"
 authors = ["Niklas Eicker <git@nikl.me>"]
 edition = "2021"
 license = "MIT OR Apache-2.0"
@@ -15,7 +15,8 @@ readme = "README.md"
 [dependencies]
 #leptos = { path = "../leptos/leptos", features = ["nightly", "experimental-islands"] }
 leptos = { version = "0.6", features = ["experimental-islands"] }
-bevy_ecs = {  version = "0.12" }
+#bevy_ecs = {  path = "../bevy/crates/bevy_ecs" }
+bevy_ecs = {  version = "0.13" }
 
 serde = { version = "1", features = ["derive"], optional = true }
 ron = { version = "0.8.1", optional = true }
@@ -31,7 +32,7 @@ leptos_router = { version = "0.6", optional = true }
 tokio-util = {version = "0.7", features = ["rt"], optional = true }
 
 gray_matter = { version = "0.2.6", optional = true }
-pulldown-cmark = { version = "0.9.3", optional = true }
+pulldown-cmark = { version = "0.10.2", optional = true }
 
 [features]
 development = []
