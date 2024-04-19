@@ -1,20 +1,71 @@
 use crate::Ingest;
+use bevy_app::{App, Plugin, Update};
 use bevy_ecs::component::Component;
 use bevy_ecs::entity::Entity;
-use bevy_ecs::prelude::{Commands, In, Query};
+use bevy_ecs::prelude::{Commands, Query, Resource};
+use bevy_ecs::schedule::{IntoSystemConfigs, IntoSystemSetConfigs, SystemSet};
+use bevy_ecs::system::Res;
 use gray_matter::engine::YAML;
 use gray_matter::Matter;
 use pulldown_cmark::{html, Options, Parser};
 use serde::de::DeserializeOwned;
 use std::fs::read_to_string;
+use std::marker::PhantomData;
 use std::path::Path;
 use std::{fs, io};
 
-pub fn read_markdown_from_directory<FrontMatter: Ingest + DeserializeOwned>(
-    In(path): In<&str>,
+#[derive(SystemSet, Clone, Debug, PartialEq, Eq, Hash)]
+pub enum MarkdownSystems {
+    Read,
+    Convert,
+}
+
+pub struct ReadMarkdownDirectory<M: Ingest + DeserializeOwned + Sync + Send + 'static> {
+    directories: Vec<String>,
+    _marker: PhantomData<M>,
+}
+
+impl<M: Ingest + DeserializeOwned + Sync + Send + 'static> Plugin for ReadMarkdownDirectory<M> {
+    fn build(&self, app: &mut App) {
+        app.insert_resource(MarkdownDirectories::<M>::new(&self.directories))
+            .add_systems(
+                Update,
+                read_markdown_from_directories::<M>.in_set(MarkdownSystems::Read),
+            );
+    }
+}
+
+impl<M: Ingest + DeserializeOwned + Sync + Send + 'static> ReadMarkdownDirectory<M> {
+    pub fn new(mut directories: Vec<impl Into<String>>) -> Self {
+        Self {
+            directories: directories.drain(..).map(|entry| entry.into()).collect(),
+            _marker: PhantomData,
+        }
+    }
+}
+
+#[derive(Resource)]
+struct MarkdownDirectories<M: Ingest + DeserializeOwned + Sync + Send + 'static> {
+    directories: Vec<String>,
+    _marker: PhantomData<M>,
+}
+
+impl<M: Ingest + DeserializeOwned + Sync + Send + 'static> MarkdownDirectories<M> {
+    fn new(directories: &Vec<String>) -> Self {
+        Self {
+            directories: directories.clone(),
+            _marker: PhantomData,
+        }
+    }
+}
+
+fn read_markdown_from_directories<
+    FrontMatter: Ingest + DeserializeOwned + Sync + Send + 'static,
+>(
     mut commands: Commands,
-) -> io::Result<Vec<Entity>> {
-    fn read_from_dir<FrontMatter: Ingest + DeserializeOwned>(
+    directories: Res<MarkdownDirectories<FrontMatter>>,
+) {
+    fn read_from_dir<FrontMatter: Ingest + DeserializeOwned + Sync + Send + 'static>(
         path: &Path,
         commands: &mut Commands,
     ) -> io::Result<Vec<Entity>> {
@@ -24,6 +75,7 @@ pub fn read_markdown_from_directory<FrontMatter: Ingest + DeserializeOwned>(
             let entry = entry?;
             let path = entry.path();
             if path.is_file() {
+                println!("reading file {}", path.to_string_lossy());
                 files.push(read_markdown::<FrontMatter>(&path, commands)?);
             } else if path.is_dir() {
                 files.append(&mut read_from_dir::<FrontMatter>(&path, commands)?)
@@ -31,11 +83,14 @@ pub fn read_markdown_from_directory<FrontMatter: Ingest + DeserializeOwned>(
         }
         Ok(files)
     }
-    let path = Path::new(path);
-    read_from_dir::<FrontMatter>(path, &mut commands)
+    for directory in &directories.directories {
+        let path = Path::new(directory);
+        read_from_dir::<FrontMatter>(path, &mut commands)
+            .unwrap_or_else(|_| panic!("Failed to read files from {}", directory));
+    }
 }
 
-fn read_markdown<FrontMatter: Ingest + DeserializeOwned>(
+fn read_markdown<FrontMatter: Ingest + DeserializeOwned + Sync + Send + 'static>(
     path: &Path,
     commands: &mut Commands,
 ) -> io::Result<Entity> {
@@ -55,7 +110,22 @@ fn read_markdown<FrontMatter: Ingest + DeserializeOwned>(
 #[derive(Component, Clone)]
 pub struct MarkdownBody(pub String);
 
-pub fn convert_markdown_to_html(markdown: Query<(Entity, &MarkdownBody)>, mut commands: Commands) {
+pub struct ConvertMarkdownToHtml;
+
+impl Plugin for ConvertMarkdownToHtml {
+    fn build(&self, app: &mut App) {
+        app.configure_sets(
+            Update,
+            (MarkdownSystems::Read, MarkdownSystems::Convert).chain(),
+        )
+        .add_systems(
+            Update,
+            convert_markdown_to_html.in_set(MarkdownSystems::Convert),
+        );
+    }
+}
+
+fn convert_markdown_to_html(markdown: Query<(Entity, &MarkdownBody)>, mut commands: Commands) {
     for (file, MarkdownBody(markdown)) in &markdown {
         let parser = Parser::new_ext(markdown, Options::all());
         let mut html = String::new();

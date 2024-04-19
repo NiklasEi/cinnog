@@ -2,36 +2,47 @@
 pub mod generator;
 pub mod loaders;
 
+use crate::loaders::markdown::MarkdownSystems;
+use bevy_app::{App, Plugins, Update};
 use bevy_ecs::bundle::Bundle;
 use bevy_ecs::component::Component;
+use bevy_ecs::prelude::apply_deferred;
+use bevy_ecs::schedule::IntoSystemConfigs;
 use bevy_ecs::system::{BoxedSystem, EntityCommands, IntoSystem, Resource};
-use bevy_ecs::world::{EntityWorldMut, World};
+use bevy_ecs::world::EntityWorldMut;
 use leptos::expect_context;
 use std::any::type_name;
 use std::path::Path;
 use std::sync::{Arc, Mutex};
 
 pub struct DataLayer {
-    world: World,
+    app: App,
 }
 
 impl DataLayer {
     pub fn new() -> Self {
         DataLayer {
-            world: World::new(),
+            app: {
+                let mut app = App::new();
+                #[cfg(feature = "markdown")]
+                app.add_systems(Update, apply_deferred.after(MarkdownSystems::Convert));
+
+                app
+            },
         }
     }
 
-    pub fn insert_resource<R: Resource>(&mut self, value: R) {
-        self.world.insert_resource(value)
+    pub fn insert_resource<R: Resource>(&mut self, value: R) -> &mut Self {
+        self.app.insert_resource(value);
+        self
     }
 
     pub fn get_resource<R: Resource + Clone>(&self) -> Option<R> {
-        self.world.get_resource::<R>().cloned()
+        self.app.world.get_resource::<R>().cloned()
     }
 
     pub fn spawn<B: Bundle>(&mut self, bundle: B) -> EntityWorldMut {
-        self.world.spawn(bundle)
+        self.app.world.spawn(bundle)
     }
 
     pub fn run_boxed<R: 'static, I: 'static>(
@@ -39,11 +50,16 @@ impl DataLayer {
         system: &mut BoxedSystem<I, R>,
         input: I,
     ) -> R {
-        system.initialize(&mut self.world);
-        let to_return = system.run(input, &mut self.world);
-        system.apply_deferred(&mut self.world);
+        system.initialize(&mut self.app.world);
+        let to_return = system.run(input, &mut self.app.world);
+        system.apply_deferred(&mut self.app.world);
 
         to_return
+    }
+
+    pub fn add_plugins<M>(&mut self, plugins: impl Plugins<M>) -> &mut Self {
+        self.app.add_plugins(plugins);
+        self
     }
 
     pub fn run<S, I, R, T>(&mut self, system: S, input: I) -> R

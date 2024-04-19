@@ -15,8 +15,11 @@ readme = "README.md"
 [dependencies]
 #leptos = { path = "../leptos/leptos", features = ["nightly", "experimental-islands"] }
 leptos = { version = "0.6", features = ["experimental-islands"] }
+
 #bevy_ecs = {  path = "../bevy/crates/bevy_ecs" }
 bevy_ecs = {  version = "0.13" }
+#bevy_app = {  path = "../bevy/crates/bevy_app" }
+bevy_app = {  version = "0.13" }
 
 serde = { version = "1", features = ["derive"], optional = true }
 ron = { version = "0.8.1", optional = true }
