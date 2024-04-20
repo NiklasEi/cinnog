@@ -16,14 +16,15 @@ use tower_http::services::ServeDir;
 
 impl DataLayer {
     pub async fn build<IV>(
-        mut self,
+        &mut self,
         app_fn: impl Fn() -> IV + Clone + Send + 'static,
     ) -> std::io::Result<()>
     where
         IV: IntoView + 'static,
     {
         self.app.update();
-        let data = Arc::new(Mutex::new(self));
+        let datalayer = std::mem::replace(self, DataLayer::new());
+        let data = Arc::new(Mutex::new(datalayer));
         let data_for_route_generation = data.clone();
 
         let conf = get_configuration(None).await.unwrap();
