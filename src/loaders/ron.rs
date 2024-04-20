@@ -1,26 +1,93 @@
-use crate::Ingest;
-use bevy_ecs::entity::Entity;
-use bevy_ecs::prelude::{Commands, In};
+use crate::{DataLayer, Ingest};
+use bevy_app::{App, Plugin, Update};
+use bevy_ecs::change_detection::Res;
+use bevy_ecs::prelude::{Commands, Resource, SystemSet};
+use bevy_ecs::schedule::IntoSystemConfigs;
 use serde::de::DeserializeOwned;
+use std::fs;
 use std::fs::File;
-use std::{fs, io};
+use std::marker::PhantomData;
 
-pub fn read_ron_files_from_directory<D: Ingest + DeserializeOwned>(
-    In(path): In<&str>,
-    mut commands: Commands,
-) -> io::Result<Vec<Entity>> {
-    let mut files = vec![];
-    for entry in fs::read_dir(path)? {
-        let entry = entry?;
-        let path = entry.path();
-        if path.is_file() {
-            let file = File::open(path.clone())?;
-            let data: D = ron::de::from_reader(file).map_err(io::Error::other)?;
-            let mut entity = commands.spawn(());
-            data.ingest_path(&mut entity, &path);
-            data.ingest(&mut entity);
-            files.push(entity.id());
+#[derive(SystemSet, Clone, Debug, PartialEq, Eq, Hash)]
+pub enum RonSystems {
+    Read,
+}
+
+pub trait RonDataLayer {
+    fn add_ron_directory<R: Ingest + DeserializeOwned + Sync + Send + 'static>(
+        &mut self,
+        directory: impl Into<String>,
+    ) -> &mut Self;
+}
+
+impl RonDataLayer for DataLayer {
+    fn add_ron_directory<R: Ingest + DeserializeOwned + Sync + Send + 'static>(
+        &mut self,
+        directory: impl Into<String>,
+    ) -> &mut Self {
+        self.app.init_resource::<RonDirectories<R>>();
+        if !self.app.is_plugin_added::<ReadRon<R>>() {
+            self.add_plugins(ReadRon::<R>::new());
+        }
+
+        let mut directories = self.app.world.resource_mut::<RonDirectories<R>>();
+        directories.directories.push(directory.into());
+
+        self
+    }
+}
+
+struct ReadRon<M: Ingest + DeserializeOwned + Sync + Send + 'static> {
+    _marker: PhantomData<M>,
+}
+
+impl<R: Ingest + DeserializeOwned + Sync + Send + 'static> Plugin for ReadRon<R> {
+    fn build(&self, app: &mut App) {
+        app.add_systems(
+            Update,
+            read_ron_files_from_directory::<R>.in_set(RonSystems::Read),
+        );
+    }
+}
+
+impl<R: Ingest + DeserializeOwned + Sync + Send + 'static> ReadRon<R> {
+    pub fn new() -> Self {
+        Self {
+            _marker: PhantomData,
         }
     }
-    Ok(files)
+}
+
+#[derive(Resource)]
+struct RonDirectories<R: Ingest + DeserializeOwned + Sync + Send + 'static> {
+    directories: Vec<String>,
+    _marker: PhantomData<R>,
+}
+
+impl<R: Ingest + DeserializeOwned + Sync + Send + 'static> Default for RonDirectories<R> {
+    fn default() -> Self {
+        Self {
+            directories: vec![],
+            _marker: PhantomData,
+        }
+    }
+}
+
+fn read_ron_files_from_directory<R: Ingest + DeserializeOwned + Sync + Send + 'static>(
+    mut commands: Commands,
+    directories: Res<RonDirectories<R>>,
+) {
+    for directory in &directories.directories {
+        for entry in fs::read_dir(directory).expect("Failed to read directory") {
+            let entry = entry.expect("Failed read directory entry");
+            let path = entry.path();
+            if path.is_file() {
+                let file = File::open(path.clone()).expect("Failed to open file");
+                let data: R = ron::de::from_reader(file).expect("Failed to parse ron");
+                let mut entity = commands.spawn(());
+                data.ingest_path(&mut entity, &path);
+                data.ingest(&mut entity);
+            }
+        }
+    }
 }
