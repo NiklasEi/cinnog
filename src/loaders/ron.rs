@@ -1,4 +1,4 @@
-use crate::Ingest;
+use crate::{DataLayer, Ingest};
 use bevy_app::{App, Plugin, Update};
 use bevy_ecs::change_detection::Res;
 use bevy_ecs::prelude::{Commands, Resource, SystemSet};
@@ -13,25 +13,46 @@ pub enum RonSystems {
     Read,
 }
 
-pub struct ReadRonDirectory<M: Ingest + DeserializeOwned + Sync + Send + 'static> {
-    directory: String,
-    _marker: PhantomData<M>,
+pub trait RonDataLayer {
+    fn add_ron_directory<R: Ingest + DeserializeOwned + Sync + Send + 'static>(
+        &mut self,
+        directory: impl Into<String>,
+    ) -> &mut Self;
 }
 
-impl<R: Ingest + DeserializeOwned + Sync + Send + 'static> Plugin for ReadRonDirectory<R> {
-    fn build(&self, app: &mut App) {
-        app.insert_resource(RonDirectories::<R>::new(&self.directory))
-            .add_systems(
-                Update,
-                read_ron_files_from_directory::<R>.in_set(RonSystems::Read),
-            );
+impl RonDataLayer for DataLayer {
+    fn add_ron_directory<R: Ingest + DeserializeOwned + Sync + Send + 'static>(
+        &mut self,
+        directory: impl Into<String>,
+    ) -> &mut Self {
+        self.app.init_resource::<RonDirectories<R>>();
+        if !self.app.is_plugin_added::<ReadRon<R>>() {
+            self.add_plugins(ReadRon::<R>::new());
+        }
+
+        let mut directories = self.app.world.resource_mut::<RonDirectories<R>>();
+        directories.directories.push(directory.into());
+
+        self
     }
 }
 
-impl<R: Ingest + DeserializeOwned + Sync + Send + 'static> ReadRonDirectory<R> {
-    pub fn new(directory: impl Into<String>) -> Self {
+struct ReadRon<M: Ingest + DeserializeOwned + Sync + Send + 'static> {
+    _marker: PhantomData<M>,
+}
+
+impl<R: Ingest + DeserializeOwned + Sync + Send + 'static> Plugin for ReadRon<R> {
+    fn build(&self, app: &mut App) {
+        app.add_systems(
+            Update,
+            read_ron_files_from_directory::<R>.in_set(RonSystems::Read),
+        );
+    }
+}
+
+impl<R: Ingest + DeserializeOwned + Sync + Send + 'static> ReadRon<R> {
+    pub fn new() -> Self {
         Self {
-            directory: directory.into(),
             _marker: PhantomData,
         }
     }
@@ -43,10 +64,10 @@ struct RonDirectories<R: Ingest + DeserializeOwned + Sync + Send + 'static> {
     _marker: PhantomData<R>,
 }
 
-impl<R: Ingest + DeserializeOwned + Sync + Send + 'static> RonDirectories<R> {
-    fn new(directory: &String) -> Self {
+impl<R: Ingest + DeserializeOwned + Sync + Send + 'static> Default for RonDirectories<R> {
+    fn default() -> Self {
         Self {
-            directories: vec![directory.clone()],
+            directories: vec![],
             _marker: PhantomData,
         }
     }
