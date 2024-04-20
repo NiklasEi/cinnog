@@ -2,12 +2,9 @@
 pub mod generator;
 pub mod loaders;
 
-use crate::loaders::markdown::MarkdownSystems;
-use bevy_app::{App, Plugins, Update};
+use bevy_app::{App, Plugins};
 use bevy_ecs::bundle::Bundle;
 use bevy_ecs::component::Component;
-use bevy_ecs::prelude::apply_deferred;
-use bevy_ecs::schedule::IntoSystemConfigs;
 use bevy_ecs::system::{BoxedSystem, EntityCommands, IntoSystem, Resource};
 use bevy_ecs::world::EntityWorldMut;
 use leptos::expect_context;
@@ -21,15 +18,7 @@ pub struct DataLayer {
 
 impl DataLayer {
     pub fn new() -> Self {
-        DataLayer {
-            app: {
-                let mut app = App::new();
-                #[cfg(feature = "markdown")]
-                app.add_systems(Update, apply_deferred.after(MarkdownSystems::Convert));
-
-                app
-            },
-        }
+        DataLayer { app: App::new() }
     }
 
     pub fn insert_resource<R: Resource>(&mut self, value: R) -> &mut Self {
