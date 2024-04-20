@@ -21,24 +21,28 @@ pub enum MarkdownSystems {
 }
 
 pub struct ReadMarkdownDirectory<M: Ingest + DeserializeOwned + Sync + Send + 'static> {
-    directories: Vec<String>,
+    directory: String,
     _marker: PhantomData<M>,
 }
 
 impl<M: Ingest + DeserializeOwned + Sync + Send + 'static> Plugin for ReadMarkdownDirectory<M> {
     fn build(&self, app: &mut App) {
-        app.insert_resource(MarkdownDirectories::<M>::new(&self.directories))
+        app.insert_resource(MarkdownDirectories::<M>::new(&self.directory))
             .add_systems(
                 Update,
                 read_markdown_from_directories::<M>.in_set(MarkdownSystems::Read),
             );
     }
+
+    fn is_unique(&self) -> bool {
+        false
+    }
 }
 
 impl<M: Ingest + DeserializeOwned + Sync + Send + 'static> ReadMarkdownDirectory<M> {
-    pub fn new(mut directories: Vec<impl Into<String>>) -> Self {
+    pub fn new(directory: impl Into<String>) -> Self {
         Self {
-            directories: directories.drain(..).map(|entry| entry.into()).collect(),
+            directory: directory.into(),
             _marker: PhantomData,
         }
     }
@@ -51,9 +55,9 @@ struct MarkdownDirectories<M: Ingest + DeserializeOwned + Sync + Send + 'static>
 }
 
 impl<M: Ingest + DeserializeOwned + Sync + Send + 'static> MarkdownDirectories<M> {
-    fn new(directories: &Vec<String>) -> Self {
+    fn new(directory: &String) -> Self {
         Self {
-            directories: directories.clone(),
+            directories: vec![directory.clone()],
             _marker: PhantomData,
         }
     }
