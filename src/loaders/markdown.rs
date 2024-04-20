@@ -75,7 +75,6 @@ fn read_markdown_from_directories<
             let entry = entry?;
             let path = entry.path();
             if path.is_file() {
-                println!("reading file {}", path.to_string_lossy());
                 files.push(read_markdown::<FrontMatter>(&path, commands)?);
             } else if path.is_dir() {
                 files.append(&mut read_from_dir::<FrontMatter>(&path, commands)?)
@@ -86,7 +85,7 @@ fn read_markdown_from_directories<
     for directory in &directories.directories {
         let path = Path::new(directory);
         read_from_dir::<FrontMatter>(path, &mut commands)
-            .unwrap_or_else(|_| panic!("Failed to read files from {}", directory));
+            .unwrap_or_else(|e| panic!("Failed to read files from {}: {:?}", directory, e));
     }
 }
 
