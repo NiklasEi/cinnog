@@ -1,4 +1,4 @@
-use crate::Ingest;
+use crate::{DataLayer, Ingest};
 use bevy_app::{App, Plugin, Update};
 use bevy_ecs::component::Component;
 use bevy_ecs::entity::Entity;
@@ -20,31 +20,48 @@ pub enum MarkdownSystems {
     Convert,
 }
 
-pub struct ReadMarkdownDirectory<M: Ingest + DeserializeOwned + Sync + Send + 'static> {
-    directory: String,
+struct ReadMarkdown<M: Ingest + DeserializeOwned + Sync + Send + 'static> {
     _marker: PhantomData<M>,
 }
 
-impl<M: Ingest + DeserializeOwned + Sync + Send + 'static> Plugin for ReadMarkdownDirectory<M> {
+impl<M: Ingest + DeserializeOwned + Sync + Send + 'static> Plugin for ReadMarkdown<M> {
     fn build(&self, app: &mut App) {
-        app.insert_resource(MarkdownDirectories::<M>::new(&self.directory))
-            .add_systems(
-                Update,
-                read_markdown_from_directories::<M>.in_set(MarkdownSystems::Read),
-            );
-    }
-
-    fn is_unique(&self) -> bool {
-        false
+        app.add_systems(
+            Update,
+            read_markdown_from_directories::<M>.in_set(MarkdownSystems::Read),
+        );
     }
 }
 
-impl<M: Ingest + DeserializeOwned + Sync + Send + 'static> ReadMarkdownDirectory<M> {
-    pub fn new(directory: impl Into<String>) -> Self {
+impl<M: Ingest + DeserializeOwned + Sync + Send + 'static> ReadMarkdown<M> {
+    pub fn new() -> Self {
         Self {
-            directory: directory.into(),
             _marker: PhantomData,
         }
+    }
+}
+
+pub trait MarkdownDataLayer {
+    fn add_markdown_directory<M: Ingest + DeserializeOwned + Sync + Send + 'static>(
+        &mut self,
+        directory: impl Into<String>,
+    ) -> &mut Self;
+}
+
+impl MarkdownDataLayer for DataLayer {
+    fn add_markdown_directory<M: Ingest + DeserializeOwned + Sync + Send + 'static>(
+        &mut self,
+        directory: impl Into<String>,
+    ) -> &mut Self {
+        self.app.init_resource::<MarkdownDirectories<M>>();
+        if !self.app.is_plugin_added::<ReadMarkdown<M>>() {
+            self.add_plugins(ReadMarkdown::<M>::new());
+        }
+
+        let mut directories = self.app.world.resource_mut::<MarkdownDirectories<M>>();
+        directories.directories.push(directory.into());
+
+        self
     }
 }
 
@@ -54,10 +71,10 @@ struct MarkdownDirectories<M: Ingest + DeserializeOwned + Sync + Send + 'static>
     _marker: PhantomData<M>,
 }
 
-impl<M: Ingest + DeserializeOwned + Sync + Send + 'static> MarkdownDirectories<M> {
-    fn new(directory: &String) -> Self {
+impl<M: Ingest + DeserializeOwned + Sync + Send + 'static> Default for MarkdownDirectories<M> {
+    fn default() -> Self {
         Self {
-            directories: vec![directory.clone()],
+            directories: vec![],
             _marker: PhantomData,
         }
     }
