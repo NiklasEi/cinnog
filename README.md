@@ -46,4 +46,4 @@ additional terms or conditions.
 [bevy_systems]: https://bevy-cheatbook.github.io/programming/systems.html?highlight=system#systems
 [bevy_resources]: https://bevy-cheatbook.github.io/programming/res.html
 [example app]: https://github.com/NiklasEi/cinnog_example
-[island mode]: (https://book.leptos.dev/islands.html)
+[island mode]: https://book.leptos.dev/islands.html
