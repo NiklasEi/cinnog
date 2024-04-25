@@ -6,6 +6,8 @@ A static site generator using [Leptos] with [Bevy ECS] as a data layer
 
 Cinnog uses the [island mode] of Leptos. Normal Leptos components are static and will be served as HTML. Only islands will be compiled to WASM and render client side.
 
+Blog post introducing Cinnog: https://www.nikl.me/blog/2024/bevy_ecs_as_data_layer_in_leptos_ssg/
+
 ## The Data layer
 
 [Bevy ECS] is used as data layer while the static site generation is handled by Leptos. The idea is similar to what Gatsby does with GraphQL using a Bevy ECS World as an in-memory database. The API of Bevy ECS is very nice to work with as a user. It removes any need of an extra syntax for data queries.
