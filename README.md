@@ -14,11 +14,7 @@ Blog post introducing Cinnog: https://www.nikl.me/blog/2024/bevy_ecs_as_data_lay
 
 Users can fill the data layer with content from the file system, external APIs, or anywhere else. When all data is loaded and processed, Cinnog can build a given Leptos app and will supply the data layer in a context. Inside components, you can run [Systems][bevy_systems] against the data layer (think GraphQL query in Gatsby) and use [Resources][bevy_resources].
 
-# MSRV
-
-Since this project relies on Bevy, it has the same MSRV policy: latest stable Rust.
-
-### Improvements
+## Improvements
 
 (not in any specific order)
 - Bevy ECS and Leptos have some namespace clashes that would be helpful to resolve (ECS Component vs Leptos Component)
@@ -27,6 +23,10 @@ Since this project relies on Bevy, it has the same MSRV policy: latest stable Ru
   - Maybe this just needs a well working pattern using contexts in user space?
   - Or some automatic mapping of path params and Entities + a context?
 - Extend example with routes generated from ECS (should already be possible since the App component has access to the data layer)
+
+## MSRV
+
+Since this project relies on Bevy, it has the same MSRV policy: latest stable Rust.
 
 ## License
 

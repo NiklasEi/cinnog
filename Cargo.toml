@@ -13,27 +13,26 @@ categories = ["web-programming"]
 readme = "README.md"
 
 [dependencies]
-#leptos = { path = "../leptos/leptos", features = ["nightly", "experimental-islands"] }
+#leptos = { path = "../leptos/leptos", features = ["experimental-islands"] }
 leptos = { version = "0.6", features = ["experimental-islands"] }
+#leptos_axum = { path = "../leptos/integrations/axum", features = ["experimental-islands"], optional = true }
+leptos_axum = { version = "0.6", features = ["experimental-islands"], optional = true }
+#leptos_router = { path = "../leptos/router", optional = true }
+leptos_router = { version = "0.6", optional = true }
 
 #bevy_ecs = {  path = "../bevy/crates/bevy_ecs" }
 bevy_ecs = {  version = "0.13" }
 #bevy_app = {  path = "../bevy/crates/bevy_app" }
 bevy_app = {  version = "0.13" }
 
-serde = { version = "1", features = ["derive"], optional = true }
-ron = { version = "0.8.1", optional = true }
-
 axum = { version = "0.7", optional = true }
 tokio = { version = "1.33.0", features = ["full"], optional = true }
 tower = { version = "0.4.13", features = ["full"], optional = true }
 tower-http = { version = "0.5", features = ["full"], optional = true }
-#leptos_axum = { path = "../leptos/integrations/axum", features = ["experimental-islands"], optional = true }
-leptos_axum = { version = "0.6", features = ["experimental-islands"], optional = true }
-#leptos_router = { path = "../leptos/router", optional = true }
-leptos_router = { version = "0.6", optional = true }
 tokio-util = {version = "0.7", features = ["rt"], optional = true }
 
+serde = { version = "1", features = ["derive"], optional = true }
+ron = { version = "0.8.1", optional = true }
 gray_matter = { version = "0.2.6", optional = true }
 pulldown-cmark = { version = "0.10.2", optional = true }
 
