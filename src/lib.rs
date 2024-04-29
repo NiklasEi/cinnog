@@ -92,9 +92,9 @@ where
     I: 'static,
 {
     let cinnog = expect_context::<Arc<Mutex<DataLayer>>>();
-    let mut lock = cinnog.lock().unwrap();
+    let mut data_layer = cinnog.lock().unwrap();
 
-    lock.run(system, input)
+    data_layer.run(system, input)
 }
 
 pub fn use_resource<R: Resource + Clone>() -> Option<R> {
@@ -103,10 +103,13 @@ pub fn use_resource<R: Resource + Clone>() -> Option<R> {
     lock.get_resource()
 }
 
-#[derive(Component, Clone)]
+#[derive(Component, Clone, Debug)]
 pub struct FileName(pub String);
 
-#[derive(Component, Clone)]
+#[derive(Component, Clone, Debug)]
+pub struct StaticPath(pub String);
+
+#[derive(Component, Clone, Debug)]
 pub struct FilePath(pub String);
 
 pub trait Ingest {
