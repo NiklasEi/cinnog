@@ -30,7 +30,7 @@ impl RonDataLayer for DataLayer {
             self.add_plugins(ReadRon::<R>::new());
         }
 
-        let mut directories = self.app.world.resource_mut::<RonDirectories<R>>();
+        let mut directories = self.app.world_mut().resource_mut::<RonDirectories<R>>();
         directories.directories.push(directory.into());
 
         self

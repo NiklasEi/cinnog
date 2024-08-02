@@ -27,11 +27,11 @@ impl DataLayer {
     }
 
     pub fn get_resource<R: Resource + Clone>(&self) -> Option<R> {
-        self.app.world.get_resource::<R>().cloned()
+        self.app.world().get_resource::<R>().cloned()
     }
 
     pub fn spawn<B: Bundle>(&mut self, bundle: B) -> EntityWorldMut {
-        self.app.world.spawn(bundle)
+        self.app.world_mut().spawn(bundle)
     }
 
     pub fn run_boxed<R: 'static, I: 'static>(
@@ -39,9 +39,9 @@ impl DataLayer {
         system: &mut BoxedSystem<I, R>,
         input: I,
     ) -> R {
-        system.initialize(&mut self.app.world);
-        let to_return = system.run(input, &mut self.app.world);
-        system.apply_deferred(&mut self.app.world);
+        system.initialize(self.app.world_mut());
+        let to_return = system.run(input, self.app.world_mut());
+        system.apply_deferred(self.app.world_mut());
 
         to_return
     }

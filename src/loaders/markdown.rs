@@ -58,7 +58,7 @@ impl MarkdownDataLayer for DataLayer {
             self.add_plugins(ReadMarkdown::<M>::new());
         }
 
-        let mut directories = self.app.world.resource_mut::<MarkdownDirectories<M>>();
+        let mut directories = self.app.world_mut().resource_mut::<MarkdownDirectories<M>>();
         directories.directories.push(directory.into());
 
         self

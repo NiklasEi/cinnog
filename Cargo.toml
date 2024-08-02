@@ -1,6 +1,6 @@
 [package]
 name = "cinnog"
-version = "0.3.0"
+version = "0.4.0-dev"
 authors = ["Niklas Eicker <git@nikl.me>"]
 edition = "2021"
 license = "MIT OR Apache-2.0"
@@ -21,9 +21,9 @@ leptos_axum = { version = "0.6", features = ["experimental-islands"], optional =
 leptos_router = { version = "0.6", optional = true }
 
 #bevy_ecs = {  path = "../bevy/crates/bevy_ecs" }
-bevy_ecs = {  version = "0.13" }
+bevy_ecs = {  version = "0.14" }
 #bevy_app = {  path = "../bevy/crates/bevy_app" }
-bevy_app = {  version = "0.13" }
+bevy_app = {  version = "0.14" }
 
 axum = { version = "0.7", optional = true }
 tokio = { version = "1.33.0", features = ["full"], optional = true }
