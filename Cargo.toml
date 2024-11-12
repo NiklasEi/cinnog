@@ -13,17 +13,17 @@ categories = ["web-programming"]
 readme = "README.md"
 
 [dependencies]
-#leptos = { path = "../leptos/leptos", features = ["experimental-islands"] }
-leptos = { version = "0.6", features = ["experimental-islands"] }
-#leptos_axum = { path = "../leptos/integrations/axum", features = ["experimental-islands"], optional = true }
-leptos_axum = { version = "0.6", features = ["experimental-islands"], optional = true }
+leptos = { git = "https://github.com/leptos-rs/leptos" }
+leptos_axum = { git = "https://github.com/leptos-rs/leptos", optional = true }
+leptos_router = { git = "https://github.com/leptos-rs/leptos", optional = true }
+#leptos = { path = "../leptos/leptos" }
+#leptos_axum = { path = "../leptos/integrations/axum", optional = true }
 #leptos_router = { path = "../leptos/router", optional = true }
-leptos_router = { version = "0.6", optional = true }
 
-#bevy_ecs = {  path = "../bevy/crates/bevy_ecs" }
 bevy_ecs = {  version = "0.14" }
-#bevy_app = {  path = "../bevy/crates/bevy_app" }
 bevy_app = {  version = "0.14" }
+#bevy_ecs = {  path = "../bevy/crates/bevy_ecs" }
+#bevy_app = {  path = "../bevy/crates/bevy_app" }
 
 axum = { version = "0.7", optional = true }
 tokio = { version = "1.33.0", features = ["full"], optional = true }

@@ -7,7 +7,7 @@ use bevy_ecs::bundle::Bundle;
 use bevy_ecs::component::Component;
 use bevy_ecs::system::{BoxedSystem, EntityCommands, IntoSystem, Resource};
 use bevy_ecs::world::EntityWorldMut;
-use leptos::expect_context;
+use leptos::prelude::expect_context;
 use std::any::type_name;
 use std::path::Path;
 use std::sync::{Arc, Mutex};
@@ -15,6 +15,9 @@ use std::sync::{Arc, Mutex};
 pub struct DataLayer {
     app: App,
 }
+
+// Todo: it would probably be better to only supply the World (already Send) to Leptos, not the whole App?
+unsafe impl Send for DataLayer {}
 
 impl DataLayer {
     pub fn new() -> Self {

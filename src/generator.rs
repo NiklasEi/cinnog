@@ -6,19 +6,14 @@ use axum::{
     http::{Request, Response, StatusCode, Uri},
     response::IntoResponse,
 };
-use leptos::*;
-use leptos_axum::generate_route_list_with_exclusions_and_ssg_and_context;
-use leptos_router::build_static_routes_with_additional_context;
+use leptos::prelude::*;
+use leptos_axum::{generate_route_list_with_exclusions_and_ssg_and_context, LeptosRoutes};
 use std::sync::{Arc, Mutex};
-use tokio::task;
 use tower::ServiceExt;
 use tower_http::services::ServeDir;
 
 impl DataLayer {
-    pub async fn build<IV>(
-        &mut self,
-        app_fn: impl Fn() -> IV + Clone + Send + 'static,
-    ) -> std::io::Result<()>
+    pub async fn build<IV>(&mut self, shell_fn: fn(LeptosOptions) -> IV) -> std::io::Result<()>
     where
         IV: IntoView + 'static,
     {
@@ -27,44 +22,37 @@ impl DataLayer {
         let data = Arc::new(Mutex::new(datalayer));
         let data_for_route_generation = data.clone();
 
-        let conf = get_configuration(None).await.unwrap();
-        let leptos_options = conf.leptos_options;
+        let conf = get_configuration(None).unwrap();
+        let leptos_options = conf.leptos_options.clone();
 
         let (routes, static_data_map) = generate_route_list_with_exclusions_and_ssg_and_context(
-            app_fn.clone(),
+            move || shell_fn(leptos_options.clone()),
             None,
             move || provide_context(data_for_route_generation.clone()),
         );
 
-        let local = task::LocalSet::new();
-        let app_fn_clone = app_fn.clone();
-        let leptos_options_clone = leptos_options.clone();
-        let routes_clone = routes.clone();
-        local
-            .run_until(async move {
-                build_static_routes_with_additional_context(
-                    &leptos_options_clone,
-                    app_fn_clone,
-                    move || provide_context(data.clone()),
-                    &routes_clone,
-                    &static_data_map,
-                )
-                .await
-                .expect("Failed to build static routes")
-            })
-            .await;
+        static_data_map.generate(&conf.leptos_options).await;
 
         #[cfg(feature = "development")]
         {
             use axum::Router;
 
-            let addr = leptos_options.site_addr;
+            let addr = conf.leptos_options.site_addr;
             println!("listening on http://{}", &addr);
 
             let app = Router::new()
-                .fallback(file_and_error_handler)
-                .with_state(leptos_options);
-            let listener = tokio::net::TcpListener::bind(&addr).await.unwrap();
+                .leptos_routes_with_context(
+                    &conf.leptos_options,
+                    routes,
+                    move || provide_context(data.clone()),
+                    {
+                        let leptos_options = conf.leptos_options.clone();
+                        move || shell_fn(leptos_options.clone())
+                    },
+                )
+                .fallback(leptos_axum::file_and_error_handler(shell_fn))
+                .with_state(conf.leptos_options);
+            let listener = tokio::net::TcpListener::bind(&addr).await?;
             axum::serve(listener, app.into_make_service())
                 .await
                 .expect("Failed to start development server");
