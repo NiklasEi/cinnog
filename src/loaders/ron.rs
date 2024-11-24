@@ -1,4 +1,6 @@
-use crate::{DataLayer, Ingest};
+#[cfg(feature = "generator")]
+use crate::generator::Generator;
+use crate::Ingest;
 use bevy_app::{App, Plugin, Update};
 use bevy_ecs::change_detection::Res;
 use bevy_ecs::prelude::{Commands, Resource, SystemSet};
@@ -20,7 +22,8 @@ pub trait RonDataLayer {
     ) -> &mut Self;
 }
 
-impl RonDataLayer for DataLayer {
+#[cfg(feature = "generator")]
+impl RonDataLayer for Generator {
     fn add_ron_directory<R: Ingest + DeserializeOwned + Sync + Send + 'static>(
         &mut self,
         directory: impl Into<String>,

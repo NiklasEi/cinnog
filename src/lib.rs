@@ -1,75 +1,20 @@
+#![forbid(unsafe_code)]
+
+mod datalayer;
 #[cfg(feature = "generator")]
 pub mod generator;
 pub mod loaders;
+mod world;
 
-use bevy_app::{App, Plugins};
+use crate::datalayer::Datalayer;
+use crate::world::DataWorld;
 use bevy_ecs::bundle::Bundle;
 use bevy_ecs::component::Component;
-use bevy_ecs::system::{BoxedSystem, EntityCommands, IntoSystem, Resource};
-use bevy_ecs::world::EntityWorldMut;
+use bevy_ecs::system::{EntityCommands, IntoSystem, Resource};
 use leptos::prelude::expect_context;
 use std::any::type_name;
 use std::path::Path;
 use std::sync::{Arc, Mutex};
-
-pub struct DataLayer {
-    app: App,
-}
-
-// Todo: it would probably be better to only supply the World (already Send) to Leptos, not the whole App?
-unsafe impl Send for DataLayer {}
-
-impl DataLayer {
-    pub fn new() -> Self {
-        DataLayer { app: App::new() }
-    }
-
-    pub fn insert_resource<R: Resource>(&mut self, value: R) -> &mut Self {
-        self.app.insert_resource(value);
-        self
-    }
-
-    pub fn get_resource<R: Resource + Clone>(&self) -> Option<R> {
-        self.app.world().get_resource::<R>().cloned()
-    }
-
-    pub fn spawn<B: Bundle>(&mut self, bundle: B) -> EntityWorldMut {
-        self.app.world_mut().spawn(bundle)
-    }
-
-    pub fn run_boxed<R: 'static, I: 'static>(
-        &mut self,
-        system: &mut BoxedSystem<I, R>,
-        input: I,
-    ) -> R {
-        system.initialize(self.app.world_mut());
-        let to_return = system.run(input, self.app.world_mut());
-        system.apply_deferred(self.app.world_mut());
-
-        to_return
-    }
-
-    pub fn add_plugins<M>(&mut self, plugins: impl Plugins<M>) -> &mut Self {
-        self.app.add_plugins(plugins);
-        self
-    }
-
-    pub fn run<S, I, R, T>(&mut self, system: S, input: I) -> R
-    where
-        S: IntoSystem<I, R, T>,
-        R: 'static,
-        I: 'static,
-    {
-        let mut boxed_system: BoxedSystem<I, R> = Box::new(IntoSystem::into_system(system));
-        self.run_boxed(&mut boxed_system, input)
-    }
-}
-
-impl Default for DataLayer {
-    fn default() -> Self {
-        Self::new()
-    }
-}
 
 pub fn expect_resource<R: Resource + Clone>() -> R {
     use_resource::<R>().unwrap_or_else(|| {
@@ -94,14 +39,14 @@ where
     R: 'static,
     I: 'static,
 {
-    let cinnog = expect_context::<Arc<Mutex<DataLayer>>>();
+    let cinnog = expect_context::<Arc<Mutex<Datalayer>>>();
     let mut data_layer = cinnog.lock().unwrap();
 
     data_layer.run(system, input)
 }
 
 pub fn use_resource<R: Resource + Clone>() -> Option<R> {
-    let cinnog = expect_context::<Arc<Mutex<DataLayer>>>();
+    let cinnog = expect_context::<Arc<Mutex<Datalayer>>>();
     let lock = cinnog.lock().unwrap();
     lock.get_resource()
 }

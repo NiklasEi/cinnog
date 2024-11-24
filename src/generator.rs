@@ -1,4 +1,5 @@
-use crate::DataLayer;
+use crate::datalayer::Datalayer;
+use crate::world::DataWorld;
 use axum::response::Response as AxumResponse;
 use axum::{
     body::Body,
@@ -6,19 +7,43 @@ use axum::{
     http::{Request, Response, StatusCode, Uri},
     response::IntoResponse,
 };
+use bevy_app::{App, Plugins};
+use bevy_ecs::bundle::Bundle;
+use bevy_ecs::prelude;
+use bevy_ecs::prelude::{EntityWorldMut, IntoSystem, World};
+use bevy_ecs::system::BoxedSystem;
 use leptos::prelude::*;
 use leptos_axum::{generate_route_list_with_exclusions_and_ssg_and_context, LeptosRoutes};
 use std::sync::{Arc, Mutex};
 use tower::ServiceExt;
 use tower_http::services::ServeDir;
 
-impl DataLayer {
+pub struct Generator {
+    pub app: App,
+}
+
+impl Generator {
+    pub fn new() -> Self {
+        Generator { app: App::new() }
+    }
+
+    pub fn insert_resource<R: prelude::Resource>(&mut self, value: R) -> &mut Self {
+        self.app.insert_resource(value);
+        self
+    }
+
+    pub fn add_plugins<M>(&mut self, plugins: impl Plugins<M>) -> &mut Self {
+        self.app.add_plugins(plugins);
+        self
+    }
+
     pub async fn build<IV>(&mut self, shell_fn: fn(LeptosOptions) -> IV) -> std::io::Result<()>
     where
         IV: IntoView + 'static,
     {
         self.app.update();
-        let datalayer = std::mem::replace(self, DataLayer::new());
+        let world = std::mem::replace(self.app.world_mut(), World::new());
+        let datalayer = Datalayer::new(world);
         let data = Arc::new(Mutex::new(datalayer));
         let data_for_route_generation = data.clone();
 
@@ -58,6 +83,40 @@ impl DataLayer {
                 .expect("Failed to start development server");
         }
         Ok(())
+    }
+}
+
+impl DataWorld for Generator {
+    fn run<S, I, R, T>(&mut self, system: S, input: I) -> R
+    where
+        S: IntoSystem<I, R, T>,
+        R: 'static,
+        I: 'static,
+    {
+        let mut boxed_system: BoxedSystem<I, R> = Box::new(IntoSystem::into_system(system));
+        self.run_boxed(&mut boxed_system, input)
+    }
+
+    fn run_boxed<R: 'static, I: 'static>(&mut self, system: &mut BoxedSystem<I, R>, input: I) -> R {
+        system.initialize(self.app.world_mut());
+        let to_return = system.run(input, self.app.world_mut());
+        system.apply_deferred(self.app.world_mut());
+
+        to_return
+    }
+
+    fn get_resource<R: prelude::Resource + Clone>(&self) -> Option<R> {
+        self.app.world().get_resource::<R>().cloned()
+    }
+
+    fn spawn<B: Bundle>(&mut self, bundle: B) -> EntityWorldMut {
+        self.app.world_mut().spawn(bundle)
+    }
+}
+
+impl Default for Generator {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

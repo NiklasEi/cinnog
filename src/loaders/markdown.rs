@@ -1,4 +1,6 @@
-use crate::{DataLayer, Ingest};
+#[cfg(feature = "generator")]
+use crate::generator::Generator;
+use crate::Ingest;
 use bevy_app::{App, Plugin, Update};
 use bevy_ecs::component::Component;
 use bevy_ecs::entity::Entity;
@@ -48,7 +50,8 @@ pub trait MarkdownDataLayer {
     ) -> &mut Self;
 }
 
-impl MarkdownDataLayer for DataLayer {
+#[cfg(feature = "generator")]
+impl MarkdownDataLayer for Generator {
     fn add_markdown_directory<M: Ingest + DeserializeOwned + Sync + Send + 'static>(
         &mut self,
         directory: impl Into<String>,
