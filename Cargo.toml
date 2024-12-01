@@ -13,9 +13,9 @@ categories = ["web-programming"]
 readme = "README.md"
 
 [dependencies]
-leptos = { version = "0.7.0-rc2" }
-leptos_axum = { version = "0.7.0-rc2", optional = true }
-leptos_router = { version = "0.7.0-rc2", optional = true }
+leptos = { version = "0.7.0" }
+leptos_axum = { version = "0.7.0", optional = true }
+leptos_router = { version = "0.7.0", optional = true }
 #leptos = { path = "../leptos/leptos" }
 #leptos_axum = { path = "../leptos/integrations/axum", optional = true }
 #leptos_router = { path = "../leptos/router", optional = true }
