@@ -10,8 +10,7 @@ use axum::{
 use bevy_app::{App, Plugins};
 use bevy_ecs::bundle::Bundle;
 use bevy_ecs::prelude;
-use bevy_ecs::prelude::{EntityWorldMut, IntoSystem, World};
-use bevy_ecs::system::BoxedSystem;
+use bevy_ecs::prelude::{EntityWorldMut, IntoSystem, SystemInput, World};
 use leptos::prelude::*;
 use leptos_axum::{generate_route_list_with_exclusions_and_ssg_and_context, LeptosRoutes};
 use std::sync::{Arc, Mutex};
@@ -87,22 +86,16 @@ impl Generator {
 }
 
 impl DataWorld for Generator {
-    fn run<S, I, R, T>(&mut self, system: S, input: I) -> R
+    fn run<S, In, Out, Marker>(&mut self, system: S, input: In::Inner<'_>) -> Out
     where
-        S: IntoSystem<I, R, T>,
-        R: 'static,
-        I: 'static,
+        S: IntoSystem<In, Out, Marker> + 'static,
+        Out: 'static,
+        In: SystemInput + 'static,
     {
-        let mut boxed_system: BoxedSystem<I, R> = Box::new(IntoSystem::into_system(system));
-        self.run_boxed(&mut boxed_system, input)
-    }
-
-    fn run_boxed<R: 'static, I: 'static>(&mut self, system: &mut BoxedSystem<I, R>, input: I) -> R {
-        system.initialize(self.app.world_mut());
-        let to_return = system.run(input, self.app.world_mut());
-        system.apply_deferred(self.app.world_mut());
-
-        to_return
+        self.app
+            .world_mut()
+            .run_system_cached_with(system, input)
+            .expect("Failed to execute system")
     }
 
     fn get_resource<R: prelude::Resource + Clone>(&self) -> Option<R> {

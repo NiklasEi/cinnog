@@ -10,7 +10,7 @@ use crate::datalayer::Datalayer;
 use crate::world::DataWorld;
 use bevy_ecs::bundle::Bundle;
 use bevy_ecs::component::Component;
-use bevy_ecs::system::{EntityCommands, IntoSystem, Resource};
+use bevy_ecs::system::{EntityCommands, IntoSystem, Resource, SystemInput};
 use leptos::prelude::expect_context;
 use std::any::type_name;
 use std::path::Path;
@@ -27,17 +27,17 @@ pub fn expect_resource<R: Resource + Clone>() -> R {
 
 pub fn run_system<S, R, T>(system: S) -> R
 where
-    S: IntoSystem<(), R, T>,
+    S: IntoSystem<(), R, T> + 'static,
     R: 'static,
 {
     run_system_with_input(system, ())
 }
 
-pub fn run_system_with_input<S, I, R, T>(system: S, input: I) -> R
+pub fn run_system_with_input<S, I, R, T>(system: S, input: I::Inner<'_>) -> R
 where
-    S: IntoSystem<I, R, T>,
+    S: IntoSystem<I, R, T> + 'static,
     R: 'static,
-    I: 'static,
+    I: SystemInput + 'static,
 {
     let cinnog = expect_context::<Arc<Mutex<Datalayer>>>();
     let mut data_layer = cinnog.lock().unwrap();

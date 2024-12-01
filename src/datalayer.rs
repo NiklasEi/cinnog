@@ -2,7 +2,7 @@ use crate::world::DataWorld;
 use bevy_ecs::bundle::Bundle;
 use bevy_ecs::prelude;
 use bevy_ecs::prelude::{EntityWorldMut, IntoSystem};
-use bevy_ecs::system::BoxedSystem;
+use bevy_ecs::system::SystemInput;
 use bevy_ecs::world::World;
 
 pub struct Datalayer {
@@ -16,22 +16,15 @@ impl Datalayer {
 }
 
 impl DataWorld for Datalayer {
-    fn run<S, I, R, T>(&mut self, system: S, input: I) -> R
+    fn run<S, In, Out, Marker>(&mut self, system: S, input: In::Inner<'_>) -> Out
     where
-        S: IntoSystem<I, R, T>,
-        R: 'static,
-        I: 'static,
+        S: IntoSystem<In, Out, Marker> + 'static,
+        Out: 'static,
+        In: SystemInput + 'static,
     {
-        let mut boxed_system: BoxedSystem<I, R> = Box::new(IntoSystem::into_system(system));
-        self.run_boxed(&mut boxed_system, input)
-    }
-
-    fn run_boxed<R: 'static, I: 'static>(&mut self, system: &mut BoxedSystem<I, R>, input: I) -> R {
-        system.initialize(&mut self.world);
-        let to_return = system.run(input, &mut self.world);
-        system.apply_deferred(&mut self.world);
-
-        to_return
+        self.world
+            .run_system_cached_with(system, input)
+            .expect("Failed to execute system")
     }
 
     fn get_resource<R: prelude::Resource + Clone>(&self) -> Option<R> {
