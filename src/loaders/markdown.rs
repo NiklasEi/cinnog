@@ -16,9 +16,12 @@ use std::marker::PhantomData;
 use std::path::Path;
 use std::{fs, io};
 
+/// System sets related to markdown and markdown to HTML conversion
 #[derive(SystemSet, Clone, Debug, PartialEq, Eq, Hash)]
 pub enum MarkdownSystems {
+    /// System sets for systems reading markdown files
     Read,
+    /// System set for systems converting markdown to HTML
     Convert,
 }
 
@@ -43,7 +46,9 @@ impl<M: Ingest + DeserializeOwned + Sync + Send + 'static> ReadMarkdown<M> {
     }
 }
 
+/// Extension trait for the data layer containing markdown specific methods
 pub trait MarkdownDataLayer {
+    /// Add a directory to be loaded as a collection of markdown files
     fn add_markdown_directory<M: Ingest + DeserializeOwned + Sync + Send + 'static>(
         &mut self,
         directory: impl Into<String>,
@@ -133,9 +138,14 @@ fn read_markdown<FrontMatter: Ingest + DeserializeOwned + Sync + Send + 'static>
     Ok(file.id())
 }
 
+/// Component containing Markdown
 #[derive(Component, Clone)]
 pub struct MarkdownBody(pub String);
 
+/// Plugin to convert all markdown content to HTML
+///
+/// The plugin will query for all [`MarkdownBody`] components and add a [`Html`] component to
+/// each of the entities.
 pub struct ConvertMarkdownToHtml;
 
 impl Plugin for ConvertMarkdownToHtml {
@@ -160,5 +170,6 @@ fn convert_markdown_to_html(markdown: Query<(Entity, &MarkdownBody)>, mut comman
     }
 }
 
+/// Component containing HTML
 #[derive(Component, Clone)]
 pub struct Html(pub String);

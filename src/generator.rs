@@ -1,12 +1,5 @@
 use crate::datalayer::Datalayer;
 use crate::world::DataWorld;
-use axum::response::Response as AxumResponse;
-use axum::{
-    body::Body,
-    extract::State,
-    http::{Request, Response, StatusCode, Uri},
-    response::IntoResponse,
-};
 use bevy_app::{App, Plugins};
 use bevy_ecs::bundle::Bundle;
 use bevy_ecs::prelude;
@@ -14,28 +7,37 @@ use bevy_ecs::prelude::{EntityWorldMut, IntoSystem, SystemInput, World};
 use leptos::prelude::*;
 use leptos_axum::{generate_route_list_with_exclusions_and_ssg_and_context, LeptosRoutes};
 use std::sync::{Arc, Mutex};
-use tower::ServiceExt;
-use tower_http::services::ServeDir;
 
+/// The static site generator.
+///
+/// You can manipulate the datalayer through adding [`Plugins`] and [`Resource`]s to the generator.
 pub struct Generator {
+    /// The Bevy [`App`] that holds the ECS world used as datalayer
     pub app: App,
 }
 
 impl Generator {
+    /// Create a new, empty [`Generator`]
     pub fn new() -> Self {
         Generator { app: App::new() }
     }
 
+    /// Insert a [`Resource`] to the [`Generator`]
     pub fn insert_resource<R: prelude::Resource>(&mut self, value: R) -> &mut Self {
         self.app.insert_resource(value);
         self
     }
 
+    /// Add ECS [`Plugins`] to the [`Generator`]
     pub fn add_plugins<M>(&mut self, plugins: impl Plugins<M>) -> &mut Self {
         self.app.add_plugins(plugins);
         self
     }
 
+    /// Build the static site.
+    ///
+    /// If the `development` feature is enabled, this method will serve the static site using
+    /// axum server.
     pub async fn build<IV>(&mut self, shell_fn: fn(LeptosOptions) -> IV) -> std::io::Result<()>
     where
         IV: IntoView + 'static,
@@ -110,40 +112,5 @@ impl DataWorld for Generator {
 impl Default for Generator {
     fn default() -> Self {
         Self::new()
-    }
-}
-
-pub async fn file_and_error_handler(
-    uri: Uri,
-    State(options): State<LeptosOptions>,
-    _req: Request<Body>,
-) -> AxumResponse {
-    let root = options.site_root.clone();
-    let res = get_static_file(uri.clone(), &root).await.unwrap();
-    if res.status() == StatusCode::NOT_FOUND {
-        // try with `.html`
-        let uri_html = format!("{}.html", uri).parse().unwrap();
-        get_static_file(uri_html, &root)
-            .await
-            .unwrap()
-            .into_response()
-    } else {
-        res.into_response()
-    }
-}
-
-async fn get_static_file(uri: Uri, root: &str) -> Result<Response<Body>, (StatusCode, String)> {
-    let req = Request::builder()
-        .uri(uri.clone())
-        .body(Body::empty())
-        .unwrap();
-    // `ServeDir` implements `tower::Service` so we can call it with `tower::ServiceExt::oneshot`
-    // This path is relative to the cargo root
-    match ServeDir::new(root).oneshot(req).await {
-        Ok(res) => Ok(res.into_response()),
-        Err(err) => Err((
-            StatusCode::INTERNAL_SERVER_ERROR,
-            format!("Something went wrong: {err}"),
-        )),
     }
 }

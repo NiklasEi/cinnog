@@ -10,12 +10,16 @@ use std::fs;
 use std::fs::File;
 use std::marker::PhantomData;
 
+/// System sets for ron related systems
 #[derive(SystemSet, Clone, Debug, PartialEq, Eq, Hash)]
 pub enum RonSystems {
+    /// System set containing systems that read ron files
     Read,
 }
 
+/// Extension trait for the data layer to add ron specific methods
 pub trait RonDataLayer {
+    /// Add a directory to be loaded as a collection fo ron files
     fn add_ron_directory<R: Ingest + DeserializeOwned + Sync + Send + 'static>(
         &mut self,
         directory: impl Into<String>,

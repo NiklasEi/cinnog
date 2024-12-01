@@ -1,5 +1,14 @@
 #![forbid(unsafe_code)]
-
+#![deny(missing_docs)]
+///! Cinnog is an experimental static site generator using [Leptos](https://www.leptos.dev/)
+///!
+///! ## Datalayer
+///! Cinnog uses Bevy ECS as [`Datalayer`] to simplify site data preparation and handling.
+///! Before building the site, you can add any data into the datalayer or manipulate already
+///! exising data.
+///! During site generation, your Leptos components can query the data layer and generate
+///! content based on it. Example workflows are automatic conversion of markdown files to HTML,
+///! or resizing all media content.
 mod datalayer;
 #[cfg(feature = "generator")]
 pub mod generator;
@@ -70,6 +79,8 @@ pub trait Ingest {
     }
 }
 
+/// Default components marking an entity as representing a file on the file system with a given
+/// [`Path`].
 pub fn default_bundle_from_path(path: &Path) -> impl Bundle {
     let path_string = path.to_string_lossy().into_owned();
     let file_ending = path.extension();
