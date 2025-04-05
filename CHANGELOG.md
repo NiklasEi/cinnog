@@ -1,5 +1,8 @@
 # Cinnog Changelog
 
+- update to Leptos 0.8
+- update to Bevy ECS 0.16
+
 ## v0.3.0 - 20.04.2024
 - Use extension traits to add directories to be loaded from ron and markdown
 - Properly support loading multiple directories of the same Ingest type for markdown and ron

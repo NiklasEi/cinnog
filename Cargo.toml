@@ -2,7 +2,7 @@
 name = "cinnog"
 version = "0.4.0-dev"
 authors = ["Niklas Eicker <git@nikl.me>"]
-edition = "2021"
+edition = "2024"
 license = "MIT OR Apache-2.0"
 description = "Data layer and helper methods for static site generation with Leptos"
 repository = "https://github.com/NiklasEi/cinnog"
@@ -13,20 +13,20 @@ categories = ["web-programming"]
 readme = "README.md"
 
 [dependencies]
-leptos = { version = "0.7.0" }
-leptos_axum = { version = "0.7.0", optional = true }
-leptos_router = { version = "0.7.0", optional = true }
-#leptos = { path = "../leptos/leptos" }
-#leptos_axum = { path = "../leptos/integrations/axum", optional = true }
-#leptos_router = { path = "../leptos/router", optional = true }
+leptos = {  git = "https://github.com/leptos-rs/leptos" }
+leptos_axum = {  git = "https://github.com/leptos-rs/leptos", optional = true }
+leptos_router = {  git = "https://github.com/leptos-rs/leptos", optional = true }
+# leptos = { path = "../leptos/leptos" }
+# leptos_axum = { path = "../leptos/integrations/axum", optional = true }
+# leptos_router = { path = "../leptos/router", optional = true }
 
 bevy_ecs = {  version = "0.15" }
 bevy_app = {  version = "0.15" }
 #bevy_ecs = {  path = "../bevy/crates/bevy_ecs" }
 #bevy_app = {  path = "../bevy/crates/bevy_app" }
 
-axum = { version = "0.7", optional = true }
-tokio = { version = "1.33.0", features = ["full"], optional = true }
+axum = { version = "0.8", optional = true }
+tokio = { version = "1.43.0", features = ["full"], optional = true }
 tower = { version = "0.5", features = ["full"], optional = true }
 tower-http = { version = "0.6", features = ["full"], optional = true }
 tokio-util = {version = "0.7", features = ["rt"], optional = true }
