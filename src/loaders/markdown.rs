@@ -1,15 +1,15 @@
+use crate::Ingest;
 #[cfg(feature = "generator")]
 use crate::generator::Generator;
-use crate::Ingest;
 use bevy_app::{App, Plugin, Update};
 use bevy_ecs::component::Component;
 use bevy_ecs::entity::Entity;
 use bevy_ecs::prelude::{Commands, Query, Resource};
 use bevy_ecs::schedule::{IntoSystemConfigs, IntoSystemSetConfigs, SystemSet};
 use bevy_ecs::system::Res;
-use gray_matter::engine::YAML;
 use gray_matter::Matter;
-use pulldown_cmark::{html, Options, Parser};
+use gray_matter::engine::YAML;
+use pulldown_cmark::{Options, Parser, html};
 use serde::de::DeserializeOwned;
 use std::fs::read_to_string;
 use std::marker::PhantomData;
