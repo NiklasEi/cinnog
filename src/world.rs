@@ -1,6 +1,7 @@
 use bevy_ecs::bundle::Bundle;
 use bevy_ecs::prelude::{EntityWorldMut, SystemInput};
-use bevy_ecs::system::{IntoSystem, Resource};
+use bevy_ecs::resource::Resource;
+use bevy_ecs::system::IntoSystem;
 
 /// Access to the inner [`bevy_ecs::world::World`] of the datalayer.
 pub trait DataWorld {

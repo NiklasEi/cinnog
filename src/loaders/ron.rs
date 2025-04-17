@@ -4,7 +4,7 @@ use crate::generator::Generator;
 use bevy_app::{App, Plugin, Update};
 use bevy_ecs::change_detection::Res;
 use bevy_ecs::prelude::{Commands, Resource, SystemSet};
-use bevy_ecs::schedule::IntoSystemConfigs;
+use bevy_ecs::schedule::IntoScheduleConfigs;
 use serde::de::DeserializeOwned;
 use std::fs;
 use std::fs::File;
