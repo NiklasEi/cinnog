@@ -104,7 +104,7 @@ impl DataWorld for Generator {
         self.app.world().get_resource::<R>().cloned()
     }
 
-    fn spawn<B: Bundle>(&mut self, bundle: B) -> EntityWorldMut {
+    fn spawn<B: Bundle>(&mut self, bundle: B) -> EntityWorldMut<'_> {
         self.app.world_mut().spawn(bundle)
     }
 }

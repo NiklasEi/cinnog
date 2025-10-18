@@ -31,7 +31,7 @@ impl DataWorld for Datalayer {
         self.world.get_resource::<R>().cloned()
     }
 
-    fn spawn<B: Bundle>(&mut self, bundle: B) -> EntityWorldMut {
+    fn spawn<B: Bundle>(&mut self, bundle: B) -> EntityWorldMut<'_> {
         self.world.spawn(bundle)
     }
 }

@@ -19,7 +19,7 @@ pub enum RonSystems {
 
 /// Extension trait for the data layer to add ron specific methods
 pub trait RonDataLayer {
-    /// Add a directory to be loaded as a collection fo ron files
+    /// Add a directory to be loaded as a collection of ron files
     fn add_ron_directory<R: Ingest + DeserializeOwned + Sync + Send + 'static>(
         &mut self,
         directory: impl Into<String>,

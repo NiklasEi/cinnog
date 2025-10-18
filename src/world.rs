@@ -16,5 +16,5 @@ pub trait DataWorld {
     fn get_resource<R: Resource + Clone>(&self) -> Option<R>;
 
     /// Spawn a new entity into the [`bevy_ecs::world::World`].
-    fn spawn<B: Bundle>(&mut self, bundle: B) -> EntityWorldMut;
+    fn spawn<B: Bundle>(&mut self, bundle: B) -> EntityWorldMut<'_>;
 }
