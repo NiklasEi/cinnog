@@ -5,7 +5,7 @@ use bevy_ecs::bundle::Bundle;
 use bevy_ecs::prelude;
 use bevy_ecs::prelude::{EntityWorldMut, IntoSystem, SystemInput, World};
 use leptos::prelude::*;
-use leptos_axum::{generate_route_list_with_exclusions_and_ssg_and_context, LeptosRoutes};
+use leptos_axum::{LeptosRoutes, generate_route_list_with_exclusions_and_ssg_and_context};
 use std::sync::{Arc, Mutex};
 
 /// The static site generator.
@@ -104,7 +104,7 @@ impl DataWorld for Generator {
         self.app.world().get_resource::<R>().cloned()
     }
 
-    fn spawn<B: Bundle>(&mut self, bundle: B) -> EntityWorldMut {
+    fn spawn<B: Bundle>(&mut self, bundle: B) -> EntityWorldMut<'_> {
         self.app.world_mut().spawn(bundle)
     }
 }

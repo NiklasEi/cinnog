@@ -1,10 +1,10 @@
+use crate::Ingest;
 #[cfg(feature = "generator")]
 use crate::generator::Generator;
-use crate::Ingest;
 use bevy_app::{App, Plugin, Update};
 use bevy_ecs::change_detection::Res;
 use bevy_ecs::prelude::{Commands, Resource, SystemSet};
-use bevy_ecs::schedule::IntoSystemConfigs;
+use bevy_ecs::schedule::IntoScheduleConfigs;
 use serde::de::DeserializeOwned;
 use std::fs;
 use std::fs::File;
@@ -19,7 +19,7 @@ pub enum RonSystems {
 
 /// Extension trait for the data layer to add ron specific methods
 pub trait RonDataLayer {
-    /// Add a directory to be loaded as a collection fo ron files
+    /// Add a directory to be loaded as a collection of ron files
     fn add_ron_directory<R: Ingest + DeserializeOwned + Sync + Send + 'static>(
         &mut self,
         directory: impl Into<String>,

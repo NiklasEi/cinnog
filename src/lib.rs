@@ -5,7 +5,7 @@
 //! ## Datalayer
 //! Cinnog uses Bevy ECS as [`Datalayer`] to simplify site data preparation and handling.
 //! Before building the site, you can add any data into the datalayer or manipulate already
-//! exising data.
+//! existing data.
 //! During site generation, your Leptos components can query the data layer and generate
 //! content based on it. Example workflows are automatic conversion of markdown files to HTML,
 //! or resizing all media content.
@@ -16,13 +16,15 @@ mod datalayer;
 pub mod generator;
 /// Load and convert different types of files.
 pub mod loaders;
-mod world;
+/// Access to the ECS world
+pub mod world;
 
 use crate::datalayer::Datalayer;
 use crate::world::DataWorld;
 use bevy_ecs::bundle::Bundle;
 use bevy_ecs::component::Component;
-use bevy_ecs::system::{EntityCommands, IntoSystem, Resource, SystemInput};
+use bevy_ecs::resource::Resource;
+use bevy_ecs::system::{EntityCommands, IntoSystem, SystemInput};
 use leptos::prelude::expect_context;
 use std::any::type_name;
 use std::path::Path;
