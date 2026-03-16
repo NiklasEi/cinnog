@@ -1,5 +1,9 @@
 # Cinnog Changelog
 
+## 0.6.0 - 16.03.2026
+- update to Bevy ECS 0.18
+- updated other dependencies
+
 ## 0.5.0 - 18.10.2025
 - update to Leptos 0.8
 - update to Bevy ECS 0.17
