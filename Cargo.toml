@@ -13,15 +13,15 @@ categories = ["web-programming"]
 readme = "README.md"
 
 [dependencies]
-leptos = { version = "0.8.0" }
-leptos_axum = { version = "0.8.0", optional = true }
-leptos_router = { version = "0.8.0", optional = true }
+leptos = { version = "0.8" }
+leptos_axum = { version = "0.8", optional = true }
+leptos_router = { version = "0.8", optional = true }
 # leptos = { path = "../leptos/leptos" }
 # leptos_axum = { path = "../leptos/integrations/axum", optional = true }
 # leptos_router = { path = "../leptos/router", optional = true }
 
-bevy_ecs = { version = "0.17.0", features = ["serialize"]}
-bevy_app = { version = "0.17.0" }
+bevy_ecs = { version = "0.18.0", features = ["serialize"]}
+bevy_app = { version = "0.18.0" }
 #bevy_ecs = { path = "../bevy/crates/bevy_ecs" }
 #bevy_app = { path = "../bevy/crates/bevy_app" }
 
@@ -34,7 +34,7 @@ tokio-util = { version = "0.7", features = ["rt"], optional = true }
 serde = { version = "1", features = ["derive"], optional = true }
 ron = { version = "0.8.1", optional = true }
 gray_matter = { version = "0.2.6", optional = true }
-pulldown-cmark = { version = "0.12", optional = true }
+pulldown-cmark = { version = "0.13", optional = true }
 
 [features]
 development = []

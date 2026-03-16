@@ -5,7 +5,9 @@ use bevy_ecs::bundle::Bundle;
 use bevy_ecs::prelude;
 use bevy_ecs::prelude::{EntityWorldMut, IntoSystem, SystemInput, World};
 use leptos::prelude::*;
-use leptos_axum::{LeptosRoutes, generate_route_list_with_exclusions_and_ssg_and_context};
+use leptos_axum::generate_route_list_with_exclusions_and_ssg_and_context;
+#[cfg(feature = "development")]
+use leptos_axum::LeptosRoutes;
 use std::sync::{Arc, Mutex};
 
 /// The static site generator.
@@ -51,6 +53,7 @@ impl Generator {
         let conf = get_configuration(None).unwrap();
         let leptos_options = conf.leptos_options.clone();
 
+        #[cfg_attr(not(feature = "development"), allow(unused_variables))]
         let (routes, static_data_map) = generate_route_list_with_exclusions_and_ssg_and_context(
             move || shell_fn(leptos_options.clone()),
             None,
